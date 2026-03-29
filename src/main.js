@@ -1,5 +1,5 @@
 import { TitleScene }    from "./scenes/TitleScene.js";
-import { MainScene }     from "./scenes/MainScene.js";
+import { MainScene }     from "./scenes/MainGameScene.js";
 import { GameOverScene } from "./scenes/GameOverScene.js";
 
 const config = {
