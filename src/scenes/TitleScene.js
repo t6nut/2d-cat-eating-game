@@ -1,23 +1,36 @@
 import { drawNightBackground, TEXT_STYLE } from '../utils.js';
 
-const W = 960;
-const H = 540;
+const W = 1280;
+const H = 720;
 
 const CHARACTER_OPTIONS = {
-  orange: { label: 'Orange Cat' },
-  tuxedo: { label: 'Tuxedo Cat' },
-  pikatchu: { label: 'Pikatchu' },
+  orange:   { label: 'Orange Cat',  idle: 'kittenIdle'   },
+  tuxedo:   { label: 'Tuxedo Cat',  idle: 'tuxedoIdle'   },
+  pikatchu: { label: 'Pikatchu',    idle: 'pikatchuIdle'  },
 };
 
 const MODE_OPTIONS = {
-  easy: { label: 'Easy' },
+  easy:   { label: 'Easy'   },
   medium: { label: 'Medium' },
-  hard: { label: 'Hard' },
+  hard:   { label: 'Hard'   },
 };
 
 const THEME_OPTIONS = {
-  day: { label: 'Day' },
+  day:   { label: 'Day'   },
   night: { label: 'Night' },
+};
+
+const MAP_OPTIONS = {
+  city:   { label: 'City'   },
+  desert: { label: 'Desert' },
+  beach:  { label: 'Beach'  },
+  moon:   { label: 'Moon'   },
+};
+
+const ENEMY_OPTIONS = {
+  zombies:  { label: 'Zombies'  },
+  vampires: { label: 'Vampires' },
+  off:      { label: 'Off'      },
 };
 
 const SAVE_PREFIX = 'cat_game_save_';
@@ -28,205 +41,234 @@ export class TitleScene extends Phaser.Scene {
     this.selectedCharacter = null;
     this.selectedMode = null;
     this.selectedTheme = null;
+    this.selectedMap = null;
     this.selectedZombies = null;
+    this.selectedEnemyType = null;
     this.selectedRunMode = null;
     this.optionButtons = {};
+    this.charPreviewSprite = null;
+    this.charPreviewLabel = null;
+    this.vehicleDescText = null;
   }
 
   preload() {
-    // Load all assets here; Phaser caches them globally for other scenes.
-    this.load.svg('kittenIdle', 'assets/sprites/kitten_idle.svg', { scale: 1 });
-    this.load.svg('kittenRun',  'assets/sprites/kitten_run.svg',  { scale: 1 });
-    this.load.svg('kittenEat',  'assets/sprites/kitten_eat.svg',  { scale: 1 });
-    this.load.svg('tuxedoIdle', 'assets/sprites/tuxedo_idle.svg', { scale: 1 });
-    this.load.svg('tuxedoRun',  'assets/sprites/tuxedo_run.svg',  { scale: 1 });
-    this.load.svg('tuxedoEat',  'assets/sprites/tuxedo_eat.svg',  { scale: 1 });
-    this.load.svg('pikatchuIdle', 'assets/sprites/pikatchu_idle.svg', { scale: 1 });
-    this.load.svg('pikatchuRun',  'assets/sprites/pikatchu_run.svg',  { scale: 1 });
-    this.load.svg('pikatchuEat',  'assets/sprites/pikatchu_eat.svg',  { scale: 1 });
-    this.load.svg('pizza',      'assets/sprites/pizza_slice.svg', { scale: 1 });
-    this.load.svg('pizzaWhole', 'assets/sprites/pizza_whole.svg', { scale: 1 });
-    this.load.svg('chefHeli',   'assets/sprites/chef_helicopter.svg', { scale: 1 });
-    this.load.svg('pizzaPlane', 'assets/sprites/pizza_plane.svg', { scale: 1 });
+    this.load.svg('kittenIdle',   'assets/sprites/kitten_idle.svg',       { scale: 1 });
+    this.load.svg('kittenRun',    'assets/sprites/kitten_run.svg',        { scale: 1 });
+    this.load.svg('kittenEat',    'assets/sprites/kitten_eat.svg',        { scale: 1 });
+    this.load.svg('tuxedoIdle',   'assets/sprites/tuxedo_idle.svg',       { scale: 1 });
+    this.load.svg('tuxedoRun',    'assets/sprites/tuxedo_run.svg',        { scale: 1 });
+    this.load.svg('tuxedoEat',    'assets/sprites/tuxedo_eat.svg',        { scale: 1 });
+    this.load.svg('pikatchuIdle', 'assets/sprites/pikatchu_idle.svg',     { scale: 1 });
+    this.load.svg('pikatchuRun',  'assets/sprites/pikatchu_run.svg',      { scale: 1 });
+    this.load.svg('pikatchuEat',  'assets/sprites/pikatchu_eat.svg',      { scale: 1 });
+    this.load.svg('pizza',        'assets/sprites/pizza_slice.svg',       { scale: 1 });
+    this.load.svg('pizzaWhole',   'assets/sprites/pizza_whole.svg',       { scale: 1 });
+    // Normal-map vehicles (helicopter & airplane)
+    this.load.svg('chefHeli',     'assets/sprites/chef_helicopter.svg',   { scale: 1 });
+    this.load.svg('pizzaPlane',   'assets/sprites/pizza_plane.svg',       { scale: 1 });
+    // Moon-map vehicles (UFO & rocketship)
+    this.load.svg('ufoSprite',    'assets/sprites/ufo.svg',               { scale: 1 });
+    this.load.svg('rocketSprite', 'assets/sprites/rocketship.svg',        { scale: 1 });
   }
 
   create() {
     drawNightBackground(this, W, H);
 
-    // Helicopter flies in from the left, then hovers
-    this.heli = this.add.sprite(-150, 82, 'chefHeli');
+    // Helicopter flies in from the left then hovers
+    this.heli = this.add.sprite(-150, 88, 'chefHeli');
     this.heli.setScale(2).setDepth(5);
-
     this.tweens.add({
       targets: this.heli,
-      x: W * 0.62,
+      x: W * 0.66,
       duration: 1700,
       ease: 'Cubic.easeOut',
       onComplete: () => this._startHeliHover(),
     });
 
     // Title
-    this.add.text(W / 2, H / 2 - 118, 'PIZZA CAT', {
+    this.add.text(W / 2, 62, 'PIZZA CAT', {
       ...TEXT_STYLE,
       fontSize: '66px',
       color: '#ffd700',
       strokeThickness: 10,
     }).setOrigin(0.5).setDepth(20);
 
-    this.add.text(W / 2, H / 2 - 40,
-      "An Italian chef in a helicopter is dropping pizza!", {
+    this.vehicleDescText = this.add.text(W / 2, 148,
+      'A helicopter and airplane are dropping pizza!', {
       ...TEXT_STYLE,
       fontSize: '17px',
       color: '#c8e0ff',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(20);
 
-    this.add.text(W / 2, H / 2 - 12, '❤  Catch every slice to grow HUGE!  ❤', {
+    this.add.text(W / 2, 174, '❤  Catch every slice to grow HUGE!  ❤', {
       ...TEXT_STYLE,
       fontSize: '18px',
       color: '#ffcc44',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(20);
 
-    this.add.text(W / 2, H / 2 + 18, '← → or A / D move, ↑ or W jump', {
+    this.add.text(W / 2, 200, '← → / A D  move   ↑ / W  jump   SPACE  flashlight   F  fullscreen', {
       ...TEXT_STYLE,
-      fontSize: '16px',
+      fontSize: '14px',
       color: '#88aadd',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(20);
 
-    this.add.text(W / 2, H / 2 + 54, 'Select all options to unlock Start', {
+    // Fullscreen button top-right
+    const fsLabel = this.add.text(W - 16, 14, '[ F ] Fullscreen', {
       ...TEXT_STYLE,
-      fontSize: '18px',
-      color: '#ffffff',
-      strokeThickness: 4,
-    }).setOrigin(0.5).setDepth(20);
+      fontSize: '15px',
+      color: '#7aaad8',
+      strokeThickness: 2,
+    }).setOrigin(1, 0).setDepth(22).setInteractive({ useHandCursor: true });
+    fsLabel.on('pointerover', () => fsLabel.setColor('#ffffff'));
+    fsLabel.on('pointerout',  () => fsLabel.setColor('#7aaad8'));
+    fsLabel.on('pointerdown', () => this._toggleFullscreen());
 
-    this.createOptionsPanel();
+    this.input.keyboard.on('keydown-F', () => this._toggleFullscreen());
 
-    // Kitten bouncing at bottom
-    const kitten = this.add.sprite(W / 2, H - 44, 'kittenIdle');
-    kitten.setScale(3).setDepth(10);
+    // Character preview (left side, between title and panel)
+    const prevX = 75;
+    const prevY = 318;
+    this.add.rectangle(prevX, prevY + 12, 118, 160, 0x0a142d, 0.82)
+      .setDepth(16).setStrokeStyle(2, 0x9bc4ff, 0.45);
+    this.add.text(prevX, prevY - 72, 'Your cat', {
+      ...TEXT_STYLE, fontSize: '13px', color: '#8ab4e8', strokeThickness: 2,
+    }).setOrigin(0.5).setDepth(17);
+    this.charPreviewSprite = this.add.sprite(prevX, prevY - 10, 'kittenIdle')
+      .setScale(3).setDepth(20);
     this.tweens.add({
-      targets: kitten,
-      y: H - 50,
-      duration: 850,
+      targets: this.charPreviewSprite,
+      y: prevY - 16,
+      duration: 900,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
     });
+    this.charPreviewLabel = this.add.text(prevX, prevY + 70, 'Orange Cat', {
+      ...TEXT_STYLE, fontSize: '13px', color: '#d8eaff', strokeThickness: 2,
+    }).setOrigin(0.5).setDepth(20);
+
+    this.createOptionsPanel();
 
     // Decorative pizzas drop every 1 s
     this.time.addEvent({ delay: 1000, loop: true, callback: this._dropPizza, callbackScope: this });
 
+    // Pre-select defaults so the game is ready to Start immediately
+    this.selectOption('character', 'orange');
+    this.selectOption('mode', 'medium');
+    this.selectOption('theme', 'day');
+    this.selectOption('map', 'city');
+    this.selectOption('enemies', 'zombies');
+    this.selectOption('session', 'new');
+  }
+
+  _toggleFullscreen() {
+    if (this.scale.isFullscreen) {
+      this.scale.stopFullscreen();
+    } else {
+      this.scale.startFullscreen();
+    }
   }
 
   createOptionsPanel() {
-    const panelY = H - 138;
-    const panel = this.add.rectangle(W / 2, panelY, 860, 220, 0x0a142d, 0.9);
+    const panelCX = W / 2;    // 640
+    const panelY  = 575;
+    const panelW  = 1000;
+    const panelH  = 262;
+
+    const panel = this.add.rectangle(panelCX, panelY, panelW, panelH, 0x0a142d, 0.9);
     panel.setStrokeStyle(3, 0x9bc4ff, 0.6);
     panel.setDepth(16);
 
-    this.add.text(W / 2, panelY - 92, '1) Character', {
-      ...TEXT_STYLE,
-      fontSize: '18px',
-      color: '#cde1ff',
-      strokeThickness: 3,
+    const lbl = (x, y, t) => this.add.text(x, y, t, {
+      ...TEXT_STYLE, fontSize: '15px', color: '#cde1ff', strokeThickness: 2,
     }).setOrigin(0.5).setDepth(17);
 
-    this.add.text(W / 2, panelY - 36, '2) Mode', {
-      ...TEXT_STYLE,
-      fontSize: '18px',
-      color: '#cde1ff',
-      strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(17);
-
-    this.add.text(W / 2, panelY + 20, '3) Theme   4) Zombies   5) Session', {
-      ...TEXT_STYLE,
-      fontSize: '18px',
-      color: '#cde1ff',
-      strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(17);
-
-    this.createOptionRow('character', ['orange', 'tuxedo', 'pikatchu'], CHARACTER_OPTIONS, panelY - 64, (value) => {
+    // --- Row 1: Character ---
+    lbl(panelCX, panelY - 112, 'Character');
+    this.createOptionRow('character', ['orange', 'tuxedo', 'pikatchu'], CHARACTER_OPTIONS, panelY - 90, (value) => {
       this.selectedCharacter = value;
-    });
-
-    this.createOptionRow('mode', ['easy', 'medium', 'hard'], MODE_OPTIONS, panelY - 8, (value) => {
-      this.selectedMode = value;
-    });
-
-    this.createOptionRow('theme', ['day', 'night'], THEME_OPTIONS, panelY + 48, (value) => {
-      this.selectedTheme = value;
-    }, W / 2 - 150);
-
-    this.createOptionRow('zombies', ['on', 'off'], { on: { label: 'On' }, off: { label: 'Off' } }, panelY + 48, (value) => {
-      this.selectedZombies = value;
-    }, W / 2 + 150);
-
-    this.createOptionRow('session', ['new', 'continue'], { new: { label: 'New' }, continue: { label: 'Continue' } }, panelY + 48, (value) => {
-      this.selectedRunMode = value;
-    }, W / 2 + 360);
-
-    this.startButton = this.add.rectangle(W / 2, panelY + 92, 280, 44, 0x4d596b, 1)
-      .setDepth(17)
-      .setStrokeStyle(3, 0x9bc4ff, 0.5);
-    this.startText = this.add.text(W / 2, panelY + 92, 'Select All Options', {
-      ...TEXT_STYLE,
-      fontSize: '20px',
-      color: '#c6d0dd',
-      strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(18);
-
-    this.startButton.setInteractive({ useHandCursor: true });
-    this.startButton.on('pointerdown', () => {
-      if (this.canStart()) {
-        this._start();
+      if (this.charPreviewSprite) {
+        this.charPreviewSprite.setTexture(CHARACTER_OPTIONS[value].idle);
+        this.charPreviewLabel.setText(CHARACTER_OPTIONS[value].label);
       }
-    });
+    }, panelCX);
 
-    this.sessionHint = this.add.text(W / 2 + 360, panelY + 77, 'Pick character to check save', {
-      ...TEXT_STYLE,
-      fontSize: '12px',
-      color: '#d2dbeb',
-      strokeThickness: 2,
+    // --- Row 2: Mode ---
+    lbl(panelCX, panelY - 57, 'Mode');
+    this.createOptionRow('mode', ['easy', 'medium', 'hard'], MODE_OPTIONS, panelY - 35, (value) => {
+      this.selectedMode = value;
+    }, panelCX);
+
+    // --- Row 3: Theme (left) + Map (right) ---
+    lbl(panelCX - 320, panelY, 'Theme');
+    lbl(panelCX + 170, panelY, 'Map');
+    this.createOptionRow('theme', ['day', 'night'], THEME_OPTIONS, panelY + 23, (value) => {
+      this.selectedTheme = value;
+    }, panelCX - 320);
+    this.createOptionRow('map', ['city', 'desert', 'beach', 'moon'], MAP_OPTIONS, panelY + 23, (value) => {
+      this.selectedMap = value;
+      if (value === 'moon') {
+        this.heli.setTexture('ufoSprite');
+        if (this.vehicleDescText) this.vehicleDescText.setText('A UFO and rocketship are dropping pizza!');
+      } else {
+        this.heli.setTexture('chefHeli');
+        if (this.vehicleDescText) this.vehicleDescText.setText('A helicopter and airplane are dropping pizza!');
+      }
+    }, panelCX + 170);
+
+    // --- Row 4: Enemies (left) + Session (right) ---
+    lbl(panelCX - 270, panelY + 58, 'Enemies');
+    lbl(panelCX + 285, panelY + 58, 'Session');
+    this.createOptionRow('enemies', ['zombies', 'vampires', 'off'], ENEMY_OPTIONS, panelY + 80, (value) => {
+      this.selectedEnemyType = value;
+      this.selectedZombies = value === 'off' ? 'off' : 'on';
+    }, panelCX - 270, 128, 115);
+    this.createOptionRow('session', ['new', 'continue'],
+      { new: { label: 'New' }, continue: { label: 'Continue' } }, panelY + 80, (value) => {
+        this.selectedRunMode = value;
+      }, panelCX + 285, 148, 132);
+
+    // --- Start button ---
+    this.startButton = this.add.rectangle(panelCX, panelY + 116, 290, 42, 0x4d596b, 1)
+      .setDepth(17).setStrokeStyle(3, 0x9bc4ff, 0.5);
+    this.startText = this.add.text(panelCX, panelY + 116, 'Select All Options', {
+      ...TEXT_STYLE, fontSize: '20px', color: '#c6d0dd', strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(18);
+    this.startButton.setInteractive({ useHandCursor: true });
+    this.startButton.on('pointerdown', () => { if (this.canStart()) this._start(); });
+
+    this.sessionHint = this.add.text(panelCX + 285, panelY + 101, 'Pick a character to check save', {
+      ...TEXT_STYLE, fontSize: '11px', color: '#d2dbeb', strokeThickness: 2,
     }).setOrigin(0.5).setDepth(18);
 
     this.updateStartButtonState();
   }
 
-  createOptionRow(groupName, keys, sourceMap, y, onSelect, centerX = W / 2) {
+  // btnSpacing / btnWidth override defaults for rows that need tighter packing
+  createOptionRow(groupName, keys, sourceMap, y, onSelect, centerX = W / 2, btnSpacing = null, btnWidth = null) {
     this.optionButtons[groupName] = [];
-    const spacing = keys.length === 2 ? 130 : 170;
-    const width = keys.length === 2 ? 120 : 150;
-    const startX = centerX - ((keys.length - 1) * spacing) / 2;
+    const count   = keys.length;
+    const spacing = btnSpacing ?? (count === 2 ? 138 : count === 4 ? 125 : 188);
+    const width   = btnWidth   ?? (count === 2 ? 124 : count === 4 ? 112 : 170);
+    const startX  = centerX - ((count - 1) * spacing) / 2;
 
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
+    for (let i = 0; i < count; i += 1) {
+      const key   = keys[i];
       const label = sourceMap[key].label;
-      const box = this.add.rectangle(startX + i * spacing, y, width, 34, 0x283c5c, 1)
-        .setDepth(17)
-        .setStrokeStyle(2, 0x89b8ff, 0.7);
+      const box   = this.add.rectangle(startX + i * spacing, y, width, 32, 0x283c5c, 1)
+        .setDepth(17).setStrokeStyle(2, 0x89b8ff, 0.7);
       box.selected = false;
 
       const text = this.add.text(startX + i * spacing, y, label, {
-        ...TEXT_STYLE,
-        fontSize: '16px',
-        color: '#e2f0ff',
-        strokeThickness: 2,
+        ...TEXT_STYLE, fontSize: '15px', color: '#e2f0ff', strokeThickness: 2,
       }).setOrigin(0.5).setDepth(18);
 
       box.setInteractive({ useHandCursor: true });
-      box.on('pointerover', () => {
-        if (!box.selected) {
-          box.setFillStyle(0x33517a);
-        }
-      });
-      box.on('pointerout', () => {
-        if (!box.selected) {
-          box.setFillStyle(0x283c5c);
-        }
-      });
+      box.on('pointerover', () => { if (!box.selected) box.setFillStyle(0x33517a); });
+      box.on('pointerout',  () => { if (!box.selected) box.setFillStyle(0x283c5c); });
       box.on('pointerdown', () => {
         const row = this.optionButtons[groupName];
         for (let j = 0; j < row.length; j += 1) {
@@ -236,25 +278,38 @@ export class TitleScene extends Phaser.Scene {
         box.selected = true;
         box.setFillStyle(0x3b8a5f);
         onSelect(key);
-        if (groupName === 'character') {
-          this.refreshContinueAvailability();
-        }
+        if (groupName === 'character') this.refreshContinueAvailability();
         this.updateStartButtonState();
       });
 
-      this.optionButtons[groupName].push({ key, box, text });
+      this.optionButtons[groupName].push({ key, box, text, onSelect });
     }
   }
 
+  // Programmatically activate a button (used for defaults)
+  selectOption(groupName, key) {
+    const row = this.optionButtons[groupName] || [];
+    for (let j = 0; j < row.length; j += 1) {
+      row[j].box.selected = false;
+      row[j].box.setFillStyle(0x283c5c);
+    }
+    const target = row.find(e => e.key === key);
+    if (!target) return;
+    target.box.selected = true;
+    target.box.setFillStyle(0x3b8a5f);
+    target.onSelect(key);
+    if (groupName === 'character') this.refreshContinueAvailability();
+    this.updateStartButtonState();
+  }
+
   canStart() {
-    if (!(this.selectedCharacter && this.selectedMode && this.selectedTheme && this.selectedZombies && this.selectedRunMode)) {
+    if (!(this.selectedCharacter && this.selectedMode && this.selectedTheme &&
+          this.selectedMap && this.selectedEnemyType && this.selectedRunMode)) {
       return false;
     }
-
     if (this.selectedRunMode === 'continue') {
       return this.hasSaveForCharacter(this.selectedCharacter);
     }
-
     return true;
   }
 
@@ -301,13 +356,16 @@ export class TitleScene extends Phaser.Scene {
       }
     }
 
-    this.sessionHint.setText(hasSave ? 'Save found for selected character' : 'No save for selected character');
+    if (this.sessionHint) {
+      this.sessionHint.setText(hasSave ? 'Save found \u2713' : 'No save found');
+    }
+    this.updateStartButtonState();
   }
 
   _startHeliHover() {
     this.tweens.add({
       targets: this.heli,
-      x: { from: W * 0.4, to: W * 0.78 },
+      x: { from: W * 0.42, to: W * 0.80 },
       duration: 3200,
       yoyo: true,
       repeat: -1,
@@ -351,7 +409,9 @@ export class TitleScene extends Phaser.Scene {
       character: this.selectedCharacter,
       mode: this.selectedMode,
       theme: this.selectedTheme,
+      map: this.selectedMap,
       zombies: this.selectedZombies === 'on',
+      enemyType: this.selectedEnemyType,
       runMode: this.selectedRunMode,
     });
   }

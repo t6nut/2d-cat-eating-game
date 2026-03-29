@@ -1,7 +1,7 @@
 import { drawNightBackground, TEXT_STYLE } from '../utils.js';
 
-const W = 960;
-const H = 540;
+const W = 1280;
+const H = 720;
 
 export class GameOverScene extends Phaser.Scene {
   constructor() {

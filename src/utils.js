@@ -41,6 +41,10 @@ export function drawNightBackground(scene, W, H) {
     { x: 538, w: 64,  h: 126, col: 0x14203c },
     { x: 624, w: 116, h: 212, col: 0x0c1624 },
     { x: 768, w: 76,  h: 146, col: 0x1a2a4c },
+    { x: 868, w: 90,  h: 162, col: 0x101828 },
+    { x: 986, w: 114, h: 196, col: 0x14203c },
+    { x: 1122, w: 78, h: 138, col: 0x1a2a4c },
+    { x: 1222, w: 60, h: 116, col: 0x0e1a30 },
   ];
 
   for (const b of bldgs) {

@@ -20,7 +20,7 @@ body {
 }
 
 .shell {
-  width: min(96vw, 1024px);
+  width: min(96vw, 1340px);
   display: grid;
   gap: 0.65rem;
 }
