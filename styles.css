@@ -1,0 +1,53 @@
+:root {
+  --bg-top: #f4e4bc;
+  --bg-bottom: #ffd9a9;
+  --ink: #2f1b14;
+  --panel: #fff3dc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%, #fff5d6 0, transparent 22%),
+    radial-gradient(circle at 85% 78%, #ffd2a5 0, transparent 26%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  color: var(--ink);
+}
+
+.shell {
+  width: min(96vw, 1024px);
+  display: grid;
+  gap: 0.65rem;
+}
+
+#game {
+  border: 5px solid #7e4a2d;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(53, 27, 12, 0.35);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  background: var(--panel);
+  border: 2px solid #d9b78f;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: clamp(0.85rem, 2.3vw, 1rem);
+}
