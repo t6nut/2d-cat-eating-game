@@ -354,22 +354,32 @@ export class TitleScene extends Phaser.Scene {
     };
 
     if (isMobileMenu) {
-      const btnH = 38; // ~1.2x of default 32
+      const btnH    = 44;     // ~15% bigger than the previous 38
+      const btnFont = '20px'; // ~33% bigger than the default 15px
+
+      // Expand panel edge-to-edge and flush to the bottom edge (gap below start button)
+      const mPanelTop = 404;
+      panel.setSize(W, H - mPanelTop).setPosition(W / 2, mPanelTop + (H - mPanelTop) / 2);
+
+      // Mobile-specific section label helper
+      const mlbl = (x, y, t) => this.add.text(x, y, t, {
+        ...TEXT_STYLE, fontSize: btnFont, color: '#cde1ff', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(17);
 
       // ---------- CHARACTER – vertical column beside preview card ----------
-      lbl(870, 240, 'Character');
+      mlbl(920, 228, 'Character');
       this.optionButtons['character'] = [];
       const charKeys = ['orange', 'tuxedo', 'pikatchu'];
-      const charColX  = 870;
-      const charColY0 = 268;
-      const charColStep = 44;
+      const charColX   = 920;
+      const charColY0  = 264;
+      const charColStep = 52;
       charKeys.forEach((key, i) => {
         const cy = charColY0 + i * charColStep;
-        const box = this.add.rectangle(charColX, cy, 168, btnH, 0x283c5c, 1)
+        const box = this.add.rectangle(charColX, cy, 186, btnH, 0x283c5c, 1)
           .setDepth(17).setStrokeStyle(2, 0x89b8ff, 0.7);
         box.selected = false;
         const tx = this.add.text(charColX, cy, CHARACTER_OPTIONS[key].label, {
-          ...TEXT_STYLE, fontSize: '15px', color: '#e2f0ff', strokeThickness: 2,
+          ...TEXT_STYLE, fontSize: btnFont, color: '#e2f0ff', strokeThickness: 2,
         }).setOrigin(0.5).setDepth(18);
         box.setInteractive({ useHandCursor: true });
         box.on('pointerover', () => { if (!box.selected) box.setFillStyle(0x33517a); });
@@ -386,30 +396,25 @@ export class TitleScene extends Phaser.Scene {
       });
 
       // ---------- THEME (left) + ENEMIES (right) – same row ----------
-      const topRowLblY = panelY - 108; // 428
-      const topRowBtnY = panelY - 78;  // 458
-      const themeX  = 270;
-      const enemyX  = 700;
-
-      lbl(themeX, topRowLblY, 'Theme');
-      this.createOptionRow('theme', ['day', 'night'], THEME_OPTIONS, topRowBtnY, (value) => {
+      mlbl(240, 420, 'Theme');
+      this.createOptionRow('theme', ['day', 'night'], THEME_OPTIONS, 454, (value) => {
         if (this.selectedMap === 'moon' && value === 'day') {
           this.selectOption('theme', 'night');
           return;
         }
         this.selectedTheme = value;
         this.updateMenuBackdrop();
-      }, themeX, 128, 114, btnH);
+      }, 240, 136, 122, btnH, btnFont);
 
-      lbl(enemyX, topRowLblY, 'Enemies');
-      this.createOptionRow('enemies', ['zombies', 'vampires', 'off'], ENEMY_OPTIONS, topRowBtnY, (value) => {
+      mlbl(700, 420, 'Enemies');
+      this.createOptionRow('enemies', ['zombies', 'vampires', 'off'], ENEMY_OPTIONS, 454, (value) => {
         this.selectedEnemyType = value;
         this.selectedZombies = value === 'off' ? 'off' : 'on';
-      }, enemyX, 152, 136, btnH);
+      }, 700, 162, 148, btnH, btnFont);
 
-      // ---------- MAP – raised ----------
-      lbl(panelCX, panelY - 30, 'Map');
-      this.createOptionRow('map', ['city', 'desert', 'beach', 'moon'], MAP_OPTIONS, panelY + 2, (value) => {
+      // ---------- MAP ----------
+      mlbl(panelCX, 506, 'Map');
+      this.createOptionRow('map', ['city', 'desert', 'beach', 'moon'], MAP_OPTIONS, 540, (value) => {
         this.selectedMap = value;
         this.updateThemeAvailabilityForMap(value);
         if (value === 'moon' && this.selectedTheme !== 'night') {
@@ -417,13 +422,13 @@ export class TitleScene extends Phaser.Scene {
           return;
         }
         this.updateMenuBackdrop();
-      }, panelCX, 142, 130, btnH);
+      }, panelCX, 152, 140, btnH, btnFont);
 
-      // ---------- START – raised ----------
-      this.startButton = this.add.rectangle(panelCX, panelY + 76, 360, 56, 0x4d596b, 1)
+      // ---------- START ----------
+      this.startButton = this.add.rectangle(panelCX, 622, 436, 64, 0x4d596b, 1)
         .setDepth(17).setStrokeStyle(3, 0x9bc4ff, 0.5);
-      this.startText = this.add.text(panelCX, panelY + 76, 'Select All Options', {
-        ...TEXT_STYLE, fontSize: '26px', color: '#c6d0dd', strokeThickness: 3,
+      this.startText = this.add.text(panelCX, 622, 'Select All Options', {
+        ...TEXT_STYLE, fontSize: '34px', color: '#c6d0dd', strokeThickness: 3,
       }).setOrigin(0.5).setDepth(18);
     } else {
       // Desktop/tablet layout.
@@ -481,8 +486,8 @@ export class TitleScene extends Phaser.Scene {
     dayEntry.text.alpha = moonLocked ? 0.5 : 1;
   }
 
-  // btnSpacing / btnWidth / btnHeight override defaults for rows that need tighter packing
-  createOptionRow(groupName, keys, sourceMap, y, onSelect, centerX = W / 2, btnSpacing = null, btnWidth = null, btnHeight = null) {
+  // btnSpacing / btnWidth / btnHeight / fontSize override defaults for rows that need tighter packing
+  createOptionRow(groupName, keys, sourceMap, y, onSelect, centerX = W / 2, btnSpacing = null, btnWidth = null, btnHeight = null, fontSize = '15px') {
     this.optionButtons[groupName] = [];
     const count   = keys.length;
     const spacing = btnSpacing ?? (count === 2 ? 138 : count === 4 ? 125 : 188);
@@ -498,7 +503,7 @@ export class TitleScene extends Phaser.Scene {
       box.selected = false;
 
       const text = this.add.text(startX + i * spacing, y, label, {
-        ...TEXT_STYLE, fontSize: '15px', color: '#e2f0ff', strokeThickness: 2,
+        ...TEXT_STYLE, fontSize, color: '#e2f0ff', strokeThickness: 2,
       }).setOrigin(0.5).setDepth(18);
 
       box.setInteractive({ useHandCursor: true });
