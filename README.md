@@ -2,6 +2,19 @@
 
 A tiny endless 2D pixel-art Phaser game prototype.
 
+## GitHub Pages Demo
+
+This repo is configured to auto-deploy to GitHub Pages from `main` using GitHub Actions.
+
+1. Push to `main`.
+2. In GitHub, open `Settings > Pages`.
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
+4. Wait for the `Deploy static site to Pages` workflow to finish.
+
+Demo URL:
+
+- `https://t6nut.github.io/2d-cat-eating-game/`
+
 ## Setup
 
 1. Open `index.html` in VS Code Live Server, or
