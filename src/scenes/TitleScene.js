@@ -36,6 +36,7 @@ const ENEMY_OPTIONS = {
 };
 
 const GROWTH_SAVE_PREFIX = 'cat_game_growth_';
+const MENU_PREFS_KEY = 'cat_game_menu_prefs';
 
 export class TitleScene extends Phaser.Scene {
   constructor() {
@@ -201,12 +202,13 @@ export class TitleScene extends Phaser.Scene {
     // Decorative pizzas drop every 1 s
     this.time.addEvent({ delay: 1000, loop: true, callback: this._dropPizza, callbackScope: this });
 
-    // Pre-select defaults so the game is ready to Start immediately
-    this.selectOption('character', 'orange');
-    this.selectOption('mode', 'easy');
-    this.selectOption('theme', 'day');
-    this.selectOption('map', 'city');
-    this.selectOption('enemies', 'off');
+    // Pre-select last used options, falling back to defaults
+    const savedPrefs = this._loadMenuPrefs();
+    this.selectOption('character', savedPrefs.character || 'orange');
+    this.selectOption('mode',      savedPrefs.mode      || 'easy');
+    this.selectOption('map',       savedPrefs.map       || 'city');
+    this.selectOption('theme',     savedPrefs.theme     || 'day');
+    this.selectOption('enemies',   savedPrefs.enemies   || 'off');
   }
 
   _toggleFullscreen() {
@@ -591,7 +593,31 @@ export class TitleScene extends Phaser.Scene {
     this.updateMenuJetpack(time);
   }
 
+  _loadMenuPrefs() {
+    try {
+      const raw = localStorage.getItem(MENU_PREFS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (_e) {
+      return {};
+    }
+  }
+
+  _saveMenuPrefs() {
+    try {
+      localStorage.setItem(MENU_PREFS_KEY, JSON.stringify({
+        character: this.selectedCharacter,
+        mode:      this.selectedMode,
+        theme:     this.selectedTheme,
+        map:       this.selectedMap,
+        enemies:   this.selectedEnemyType,
+      }));
+    } catch (_e) {
+      // storage unavailable — silently ignore
+    }
+  }
+
   _start() {
+    this._saveMenuPrefs();
     this.scene.start('MainScene', {
       character: this.selectedCharacter,
       mode: this.selectedMode,
