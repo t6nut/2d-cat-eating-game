@@ -143,6 +143,10 @@ export class MainScene extends Phaser.Scene {
     this.foodCaught = 0;
     this.sizeMultiplier = 1;
 
+    if (this.currentMapKey === 'moon') {
+      this.currentThemeKey = 'night';
+    }
+
     // Keep each cat's growth persistent even when starting a new session.
     const growthState = this.loadGrowthState(this.currentCharacterKey);
     if (growthState) {
@@ -519,11 +523,6 @@ export class MainScene extends Phaser.Scene {
   }
 
   spawnFood() {
-    const mode = this.getCurrentMode();
-    if (Math.random() < mode.pizzaChance && !this.airplaneActive) {
-      this.launchAirplaneBigPizza();
-      return;
-    }
     this.spawnSliceFromHelicopter();
   }
 
@@ -674,12 +673,28 @@ export class MainScene extends Phaser.Scene {
     const speed = isVampire ? mode.zombieSpeed + 12 : mode.zombieSpeed;
     const velocityX = fromLeft ? speed : -speed;
     const textureKey = isVampire ? 'vampireWalker' : 'zombieWalker';
+
+    const activeEnemies = this.zombieGroup.getChildren();
+    for (let i = 0; i < activeEnemies.length; i += 1) {
+      const e = activeEnemies[i];
+      if (!e?.active) {
+        continue;
+      }
+      if (Math.abs(e.x - startX) < 34) {
+        return;
+      }
+    }
+
     const zombie = this.zombieGroup.get(startX, this.getGroundSurfaceY() - 14, textureKey);
     if (!zombie) {
       return;
     }
     if (!zombie.shadow || !zombie.shadow.active) {
       zombie.shadow = this.add.ellipse(startX, this.getGroundSurfaceY(), 36, 12, 0x000000, 0.2).setDepth(6);
+    }
+    if (zombie.umbrella) {
+      zombie.umbrella.destroy();
+      zombie.umbrella = null;
     }
     zombie.setActive(true);
     zombie.setVisible(true);
@@ -925,13 +940,16 @@ export class MainScene extends Phaser.Scene {
     this.showCatchPopup(this.kitten.x, this.kitten.y - 45 * this.sizeMultiplier, popupText);
 
     if (growthValue <= 1) {
-      this.slicesEatenForBonus += 1;
-      if (this.slicesEatenForBonus % 5 === 0) {
-        this.pendingBonusFlyovers += 1;
-        if (!this.airplaneActive) {
-          this.pendingBonusFlyovers -= 1;
-          this.launchAirplaneBigPizza();
-          this.showCatchPopup(this.kitten.x, this.kitten.y - 64 * this.sizeMultiplier, 'BONUS FLYOVER!');
+      const airborneSlice = food?.sourceType === 'slice' && !food?.onGround;
+      if (airborneSlice) {
+        this.slicesEatenForBonus += 1;
+        if (this.slicesEatenForBonus % 5 === 0) {
+          this.pendingBonusFlyovers += 1;
+          if (!this.airplaneActive) {
+            this.pendingBonusFlyovers -= 1;
+            this.launchAirplaneBigPizza();
+            this.showCatchPopup(this.kitten.x, this.kitten.y - 64 * this.sizeMultiplier, 'BONUS FLYOVER!');
+          }
         }
       }
     }
@@ -956,6 +974,10 @@ export class MainScene extends Phaser.Scene {
       if (zombie.shadow) {
         zombie.shadow.destroy();
         zombie.shadow = null;
+      }
+      if (zombie.umbrella) {
+        zombie.umbrella.destroy();
+        zombie.umbrella = null;
       }
       zombie.disableBody(true, true);
       kitten.setVelocityY(-220);
@@ -1336,7 +1358,7 @@ export class MainScene extends Phaser.Scene {
     );
 
     const groundTop = this.getGroundSurfaceY();
-    const nearGround = body.bottom >= groundTop - 24 && body.velocity.y >= -20;
+    const nearGround = body.bottom >= groundTop - 24 && body.velocity.y >= 0;
     if (nearGround) {
       body.y = groundTop - body.height;
       this.kitten.y = body.y + body.height;
@@ -1439,6 +1461,10 @@ export class MainScene extends Phaser.Scene {
     if (enemy.shadow) {
       enemy.shadow.destroy();
       enemy.shadow = null;
+    }
+    if (enemy.umbrella) {
+      enemy.umbrella.destroy();
+      enemy.umbrella = null;
     }
     const ash = this.add.sprite(enemy.x, enemy.y + 5, 'vampireAsh').setDepth(7);
     this.tweens.add({
@@ -1708,10 +1734,12 @@ export class MainScene extends Phaser.Scene {
     if (this.kitten.body.blocked.down || this.kitten.body.touching.down) {
       const body = this.kitten.body;
       const groundTop = this.getGroundSurfaceY();
-      if (Math.abs(body.bottom - groundTop) > 1) {
+      if (body.velocity.y >= 0 && Math.abs(body.bottom - groundTop) > 1) {
         body.y = groundTop - body.height;
       }
-      this.kitten.y = body.y + body.height;
+      if (body.velocity.y >= 0) {
+        this.kitten.y = body.y + body.height;
+      }
     }
   }
 
@@ -1734,6 +1762,10 @@ export class MainScene extends Phaser.Scene {
         if (zombie.shadow) {
           zombie.shadow.destroy();
           zombie.shadow = null;
+        }
+        if (zombie.umbrella) {
+          zombie.umbrella.destroy();
+          zombie.umbrella = null;
         }
         zombie.disableBody(true, true);
       }
@@ -1880,7 +1912,7 @@ export class MainScene extends Phaser.Scene {
       zombie.body.velocity.y = 0;
       zombie.y = zombie.body.y + zombie.body.height;
 
-      if (dayMode && zombie.enemyType === 'zombie') {
+      if (dayMode && zombie.enemyType === 'vampire') {
         if (!zombie.umbrella || !zombie.umbrella.active) {
           zombie.umbrella = this.add.graphics().setDepth(8);
         }

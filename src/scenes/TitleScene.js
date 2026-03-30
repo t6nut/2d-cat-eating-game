@@ -330,11 +330,20 @@ export class TitleScene extends Phaser.Scene {
     lbl(panelCX - 320, panelY, 'Theme');
     lbl(panelCX + 170, panelY, 'Map');
     this.createOptionRow('theme', ['day', 'night'], THEME_OPTIONS, panelY + 23, (value) => {
+      if (this.selectedMap === 'moon' && value === 'day') {
+        this.selectOption('theme', 'night');
+        return;
+      }
       this.selectedTheme = value;
       this.updateMenuBackdrop();
     }, panelCX - 320);
     this.createOptionRow('map', ['city', 'desert', 'beach', 'moon'], MAP_OPTIONS, panelY + 23, (value) => {
       this.selectedMap = value;
+      this.updateThemeAvailabilityForMap(value);
+      if (value === 'moon' && this.selectedTheme !== 'night') {
+        this.selectOption('theme', 'night');
+        return;
+      }
       this.updateMenuBackdrop();
     }, panelCX + 170);
 
@@ -366,6 +375,18 @@ export class TitleScene extends Phaser.Scene {
     this.startButton.on('pointerdown', () => { if (this.canStart()) this._start(); });
 
     this.updateStartButtonState();
+  }
+
+  updateThemeAvailabilityForMap(mapKey) {
+    const row = this.optionButtons.theme || [];
+    const dayEntry = row.find(e => e.key === 'day');
+    if (!dayEntry) {
+      return;
+    }
+
+    const moonLocked = mapKey === 'moon';
+    dayEntry.box.alpha = moonLocked ? 0.35 : 1;
+    dayEntry.text.alpha = moonLocked ? 0.5 : 1;
   }
 
   // btnSpacing / btnWidth override defaults for rows that need tighter packing
