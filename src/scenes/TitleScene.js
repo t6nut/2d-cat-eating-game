@@ -117,7 +117,7 @@ export class TitleScene extends Phaser.Scene {
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(20);
 
-    this.add.text(W / 2, 200, '← → / A D  move   ↑ / W  jump   SPACE  flashlight   F  fullscreen', {
+    this.add.text(W / 2, 200, '← → / A D move   ↑ / W jump   F light/laser   SPACE jetpack(moon)   ESC menu   G fullscreen', {
       ...TEXT_STYLE,
       fontSize: '14px',
       color: '#88aadd',
@@ -125,7 +125,7 @@ export class TitleScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(20);
 
     // Fullscreen button top-right
-    const fsLabel = this.add.text(W - 16, 14, '[ F ] Fullscreen', {
+    const fsLabel = this.add.text(W - 16, 14, '[ G ] Fullscreen', {
       ...TEXT_STYLE,
       fontSize: '15px',
       color: '#7aaad8',
@@ -135,7 +135,7 @@ export class TitleScene extends Phaser.Scene {
     fsLabel.on('pointerout',  () => fsLabel.setColor('#7aaad8'));
     fsLabel.on('pointerdown', () => this._toggleFullscreen());
 
-    this.input.keyboard.on('keydown-F', () => this._toggleFullscreen());
+    this.input.keyboard.on('keydown-G', () => this._toggleFullscreen());
 
     // Character preview (centered above options panel)
     const prevX = W / 2;

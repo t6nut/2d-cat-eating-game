@@ -203,9 +203,10 @@ export class MainScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wasd = this.input.keyboard.addKeys('W,A,S,D');
-    this.restartKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-    this.flashToggleKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.fullscreenKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this.restartKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.lightToggleKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this.jetpackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.fullscreenKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
 
     this.input.keyboard.on('keydown', this.resumeAudio, this);
     this.input.on('pointerdown', this.resumeAudio, this);
@@ -398,10 +399,10 @@ export class MainScene extends Phaser.Scene {
       }
     }
 
-    const nightEnabled = themeKey === 'night';
-    this.flashlightCone.setVisible(nightEnabled);
-    this.flashlightHandle.setVisible(nightEnabled);
-    if (!nightEnabled) {
+    const beamEnabled = this.flashlightOn && (themeKey === 'night' || themeKey === 'day');
+    this.flashlightCone.setVisible(beamEnabled);
+    this.flashlightHandle.setVisible(beamEnabled);
+    if (!beamEnabled) {
       this.flashlightCone.clear();
       this.flashlightHandle.clear();
     }
@@ -427,7 +428,7 @@ export class MainScene extends Phaser.Scene {
     this.fuelBarFill = this.add.graphics().setDepth(20);
 
     this.add
-      .text(WORLD_WIDTH - 20, 20, 'R: Menu   F: Fullscreen', {
+      .text(WORLD_WIDTH - 20, 20, 'ESC: Menu   F: Light/Laser   G: Fullscreen', {
         fontFamily: '"Trebuchet MS", "Verdana", sans-serif',
         fontSize: '18px',
         color: '#2f1b14',
@@ -697,6 +698,8 @@ export class MainScene extends Phaser.Scene {
     zombie.litStopped = false;
     zombie.enemyType = isVampire ? 'vampire' : 'zombie';
     zombie.vampireLightMs = 0;
+    zombie.laserBurnMs = 0;
+    zombie.umbrella = null;
     this.syncEnemyBody(zombie);
   }
 
@@ -854,6 +857,10 @@ export class MainScene extends Phaser.Scene {
     zombie.setScale(zombie.growthScale);
     zombie.moveSpeed = Phaser.Math.Clamp((zombie.moveSpeed || 0) * 1.3, 40, 320);
     this.syncEnemyBody(zombie);
+    if (zombie.body) {
+      zombie.body.velocity.y = 0;
+      zombie.body.y = this.getGroundSurfaceY() - zombie.body.height;
+    }
     if (!zombie.litStopped) {
       zombie.setVelocityX(zombie.moveDir * zombie.moveSpeed);
     }
@@ -1319,13 +1326,20 @@ export class MainScene extends Phaser.Scene {
     }
 
     const body = this.kitten.body;
-    body.setSize(CHARACTER_HITBOX.width, CHARACTER_HITBOX.height, false);
-    body.setOffset(CHARACTER_HITBOX.offsetX, CHARACTER_HITBOX.offsetY);
+    const scale = this.sizeMultiplier;
+    const bodyW = Phaser.Math.Clamp(Math.round(CHARACTER_HITBOX.width * scale), 14, 42);
+    const bodyH = Phaser.Math.Clamp(Math.round(CHARACTER_HITBOX.height * scale), 10, 32);
+    body.setSize(bodyW, bodyH, false);
+    body.setOffset(
+      CHARACTER_HITBOX.offsetX + Math.round((CHARACTER_HITBOX.width - bodyW) * 0.5),
+      CHARACTER_HITBOX.offsetY + Math.round(CHARACTER_HITBOX.height - bodyH),
+    );
 
     const groundTop = this.getGroundSurfaceY();
     const nearGround = body.bottom >= groundTop - 24 && body.velocity.y >= -20;
     if (nearGround) {
       body.y = groundTop - body.height;
+      this.kitten.y = body.y + body.height;
     }
   }
 
@@ -1333,11 +1347,19 @@ export class MainScene extends Phaser.Scene {
     if (!enemy || !enemy.body) {
       return;
     }
-    enemy.body.setSize(CHARACTER_HITBOX.width, CHARACTER_HITBOX.height, false);
-    enemy.body.setOffset(CHARACTER_HITBOX.offsetX, CHARACTER_HITBOX.offsetY);
+    const enemyScale = Phaser.Math.Clamp(enemy.growthScale || 1, 1, 2.6);
+    const bodyW = Phaser.Math.Clamp(Math.round(CHARACTER_HITBOX.width * enemyScale), 14, 42);
+    const bodyH = Phaser.Math.Clamp(Math.round(CHARACTER_HITBOX.height * enemyScale), 10, 32);
+    enemy.body.setSize(bodyW, bodyH, false);
+    enemy.body.setOffset(
+      CHARACTER_HITBOX.offsetX + Math.round((CHARACTER_HITBOX.width - bodyW) * 0.5),
+      CHARACTER_HITBOX.offsetY + Math.round(CHARACTER_HITBOX.height - bodyH),
+    );
     const groundTop = this.getGroundSurfaceY();
     if (enemy.body.bottom >= groundTop - 24) {
       enemy.body.y = groundTop - enemy.body.height;
+      enemy.y = enemy.body.y + enemy.body.height;
+      enemy.body.velocity.y = 0;
     }
   }
 
@@ -1512,7 +1534,7 @@ export class MainScene extends Phaser.Scene {
       return;
     }
 
-    if (this.currentMapKey !== 'moon' && Phaser.Input.Keyboard.JustDown(this.flashToggleKey)) {
+    if (Phaser.Input.Keyboard.JustDown(this.lightToggleKey)) {
       this.flashlightOn = !this.flashlightOn;
       this.updateHud();
     }
@@ -1534,7 +1556,7 @@ export class MainScene extends Phaser.Scene {
       this.updateHud();
     }
 
-    const jetpackActive = this.currentMapKey === 'moon' && this.flashToggleKey.isDown && this.jetpackFuel > 0;
+    const jetpackActive = this.currentMapKey === 'moon' && this.jetpackKey.isDown && this.jetpackFuel > 0;
 
     if (jetpackActive) {
       this.jetpackFuel = Math.max(0, this.jetpackFuel - (this.jetpackFuelDrainPerSec * delta) / 1000);
@@ -1559,6 +1581,7 @@ export class MainScene extends Phaser.Scene {
     this.cleanupZombies();
     this.updateFlashlightPosition();
     this.updateZombieLightEffect(delta);
+    this.updateZombieGroundingAndAccessories();
     this.updateShadows();
     this.drawJetpackVisual(jetpackActive);
     this.updateAstronautHelmet();
@@ -1647,7 +1670,7 @@ export class MainScene extends Phaser.Scene {
       this.kitten.setVelocityY(this.jumpVelocity);
     }
 
-    if (this.currentMapKey === 'moon' && this.flashToggleKey.isDown && this.jetpackFuel > 0) {
+    if (this.currentMapKey === 'moon' && this.jetpackKey.isDown && this.jetpackFuel > 0) {
       const lift = this.jetpackThrustPerSec * (delta / 1000);
       this.kitten.setVelocityY(Math.max(this.jetpackMaxLiftSpeed, this.kitten.body.velocity.y - lift));
     }
@@ -1688,6 +1711,7 @@ export class MainScene extends Phaser.Scene {
       if (Math.abs(body.bottom - groundTop) > 1) {
         body.y = groundTop - body.height;
       }
+      this.kitten.y = body.y + body.height;
     }
   }
 
@@ -1717,7 +1741,9 @@ export class MainScene extends Phaser.Scene {
   }
 
   updateFlashlightPosition() {
-    const lightEnabled = this.currentThemeKey === 'night' && this.flashlightOn && this.flashlightBattery > 0;
+    const nightBeam = this.currentThemeKey === 'night' && this.flashlightOn && this.flashlightBattery > 0;
+    const dayLaser = this.currentThemeKey === 'day' && this.flashlightOn;
+    const lightEnabled = nightBeam || dayLaser;
     if (!lightEnabled) {
       this.flashlightCone.clear();
       this.flashlightHandle.clear();
@@ -1740,9 +1766,9 @@ export class MainScene extends Phaser.Scene {
 
     // Cone beam from hand.
     this.flashlightCone.clear();
-    this.flashlightCone.fillStyle(0xfff1b0, 0.13);
+    this.flashlightCone.fillStyle(dayLaser ? 0xff3b3b : 0xfff1b0, dayLaser ? 0.17 : 0.13);
     this.flashlightCone.fillTriangle(handX, handY, farX, handY - halfWidth, farX, handY + halfWidth);
-    this.flashlightCone.fillStyle(0xfff7d1, 0.21);
+    this.flashlightCone.fillStyle(dayLaser ? 0xff8a8a : 0xfff7d1, dayLaser ? 0.26 : 0.21);
     this.flashlightCone.fillTriangle(
       handX,
       handY,
@@ -1756,19 +1782,21 @@ export class MainScene extends Phaser.Scene {
     const h = this.flashlightHandle;
     h.clear();
     // Body of flashlight (barrel pointing in direction of movement).
-    h.fillStyle(0x888888, 1);
+    h.fillStyle(dayLaser ? 0x661a1a : 0x888888, 1);
     h.fillRect(handX - 2, handY - 2, dir * 10, 4);
     // Lens end (slightly wider circle at tip).
-    h.fillStyle(0xddddcc, 1);
+    h.fillStyle(dayLaser ? 0xffa7a7 : 0xddddcc, 1);
     h.fillCircle(handX + dir * 8, handY, 2.5);
     // Grip (short perpendicular bar).
-    h.fillStyle(0x666666, 1);
+    h.fillStyle(dayLaser ? 0x4a1111 : 0x666666, 1);
     h.fillRect(handX - 1, handY, 2, 5);
   }
 
   updateZombieLightEffect(delta) {
     const zombies = this.zombieGroup.getChildren();
-    const lightActive = this.currentThemeKey === 'night' && this.flashlightOn && this.flashlightBattery > 0;
+    const nightBeam = this.currentThemeKey === 'night' && this.flashlightOn && this.flashlightBattery > 0;
+    const dayLaser = this.currentThemeKey === 'day' && this.flashlightOn;
+    const lightActive = nightBeam || dayLaser;
 
     for (let i = 0; i < zombies.length; i += 1) {
       const zombie = zombies[i];
@@ -1785,6 +1813,8 @@ export class MainScene extends Phaser.Scene {
           }
           zombie.setVelocityX(zombie.moveDir * zombie.moveSpeed);
         }
+        zombie.vampireLightMs = 0;
+        zombie.laserBurnMs = 0;
         continue;
       }
 
@@ -1795,7 +1825,13 @@ export class MainScene extends Phaser.Scene {
       const lit = inFront && dy <= coneHalfAtDepth;
 
       if (lit) {
-        if (zombie.enemyType === 'vampire') {
+        if (dayLaser) {
+          zombie.laserBurnMs = (zombie.laserBurnMs || 0) + delta;
+          if (zombie.laserBurnMs >= 1200) {
+            this.burnVampireToAsh(zombie);
+            continue;
+          }
+        } else if (zombie.enemyType === 'vampire') {
           zombie.vampireLightMs = (zombie.vampireLightMs || 0) + delta;
           if (zombie.vampireLightMs >= 3000) {
             this.burnVampireToAsh(zombie);
@@ -1805,18 +1841,61 @@ export class MainScene extends Phaser.Scene {
         if (!zombie.litStopped) {
           zombie.litStopped = true;
           zombie.setVelocityX(0);
-          zombie.setTint(zombie.enemyType === 'vampire' ? 0xffb38f : 0xe9f6ff);
+          zombie.setTint(dayLaser ? 0xff5d5d : zombie.enemyType === 'vampire' ? 0xffb38f : 0xe9f6ff);
         }
       } else if (zombie.litStopped) {
         zombie.litStopped = false;
         zombie.clearTint();
-        if (zombie.enemyType === 'vampire') {
+        if (!dayLaser && zombie.enemyType === 'vampire') {
           zombie.setTint(0xd8c3ff);
           zombie.vampireLightMs = Math.max(0, (zombie.vampireLightMs || 0) - delta * 1.2);
         }
+        zombie.laserBurnMs = Math.max(0, (zombie.laserBurnMs || 0) - delta * 1.3);
         zombie.setVelocityX(zombie.moveDir * zombie.moveSpeed);
-      } else if (zombie.enemyType === 'vampire' && zombie.vampireLightMs > 0) {
+      } else if (!dayLaser && zombie.enemyType === 'vampire' && zombie.vampireLightMs > 0) {
         zombie.vampireLightMs = Math.max(0, zombie.vampireLightMs - delta * 1.2);
+      } else if (dayLaser && zombie.laserBurnMs > 0) {
+        zombie.laserBurnMs = Math.max(0, zombie.laserBurnMs - delta * 1.3);
+      }
+    }
+  }
+
+  updateZombieGroundingAndAccessories() {
+    const zombies = this.zombieGroup.getChildren();
+    const dayMode = this.currentThemeKey === 'day';
+    const groundTop = this.getGroundSurfaceY();
+
+    for (let i = 0; i < zombies.length; i += 1) {
+      const zombie = zombies[i];
+      if (!zombie?.active || !zombie.body) {
+        if (zombie?.umbrella) {
+          zombie.umbrella.destroy();
+          zombie.umbrella = null;
+        }
+        continue;
+      }
+
+      // Keep enemies planted on ground so they cannot drift or sink below the floor.
+      zombie.body.y = groundTop - zombie.body.height;
+      zombie.body.velocity.y = 0;
+      zombie.y = zombie.body.y + zombie.body.height;
+
+      if (dayMode && zombie.enemyType === 'zombie') {
+        if (!zombie.umbrella || !zombie.umbrella.active) {
+          zombie.umbrella = this.add.graphics().setDepth(8);
+        }
+        const umb = zombie.umbrella;
+        const x = zombie.x;
+        const y = zombie.y - 18 * (zombie.growthScale || 1);
+        const scale = Phaser.Math.Clamp(zombie.growthScale || 1, 1, 2.6);
+        umb.clear();
+        umb.fillStyle(0x1f1f1f, 0.95);
+        umb.fillEllipse(x, y, 20 * scale, 8 * scale);
+        umb.fillStyle(0x2f2f2f, 1);
+        umb.fillRect(x - scale, y - 1, 2 * scale, 12 * scale);
+      } else if (zombie.umbrella) {
+        zombie.umbrella.destroy();
+        zombie.umbrella = null;
       }
     }
   }
