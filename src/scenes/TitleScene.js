@@ -98,7 +98,7 @@ export class TitleScene extends Phaser.Scene {
 
     // Chef oven flies in from the left then hovers
     this.heli = this.add.sprite(-150, 88, 'pizzaOven');
-    this.heli.setScale(2).setDepth(5);
+    this.heli.setScale(1).setDepth(5);
     this.tweens.add({
       targets: this.heli,
       x: W * 0.66,

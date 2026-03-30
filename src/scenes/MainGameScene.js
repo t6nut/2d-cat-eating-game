@@ -207,7 +207,7 @@ export class MainScene extends Phaser.Scene {
 
     const heliKey  = this.currentMapKey === 'moon' ? 'ufoSprite'    : 'pizzaOven';
     const planeKey = this.currentMapKey === 'moon' ? 'rocketSprite' : 'pizzaPlane';
-    this.chefHeli   = this.add.sprite(WORLD_WIDTH / 2, 88, heliKey).setScale(1.35).setDepth(5);
+    this.chefHeli   = this.add.sprite(WORLD_WIDTH / 2, 88, heliKey).setScale(0.7).setDepth(5);
     this.pizzaPlane = this.add.sprite(-140, 120, planeKey).setVisible(false).setScale(1.22).setDepth(5);
 
     this.pizzaGroup = this.physics.add.group({ bounceY: 0, collideWorldBounds: false, maxSize: 180 });
@@ -247,7 +247,12 @@ export class MainScene extends Phaser.Scene {
     this.applyTheme(this.currentThemeKey);
 
     this.kittenShadow = this.add.ellipse(this.kitten.x, this.getGroundSurfaceY(), 42, 14, 0x000000, 0.24).setDepth(6);
-    this.heliShadow = this.add.ellipse(this.chefHeli.x, this.getGroundSurfaceY(), 110, 26, 0x000000, 0.18).setDepth(4);
+    this.heliShadow = this.add.ellipse(this.chefHeli.x, this.getGroundSurfaceY(), 60, 15, 0x000000, 0.18).setDepth(4);
+    // Animated flame overlay on oven door (only for non-moon maps)
+    if (this.currentMapKey !== 'moon') {
+      this.ovenFlameGfx = this.add.graphics().setDepth(6);
+      this.ovenFlameTime = 0;
+    }
     this.rocketShadow = this.add.ellipse(this.pizzaPlane.x, this.getGroundSurfaceY(), 88, 20, 0x000000, 0.16).setDepth(4).setVisible(false);
     this.createAstronautHelmet();
     this.createJetpackVisuals();
@@ -600,6 +605,26 @@ export class MainScene extends Phaser.Scene {
     const cruise = Math.sin(t * 0.22) * baseSpeed;
     this.chefHeli.x = Phaser.Math.Clamp(WORLD_WIDTH / 2 + swing + cruise, 70, WORLD_WIDTH - 70);
     this.chefHeli.y = 82 + Math.sin(t * 4.5) * 2;
+
+    if (this.ovenFlameGfx) {
+      this.ovenFlameTime += 0.13;
+      const fl = this.ovenFlameGfx;
+      fl.clear();
+      // SVG viewBox 190x140 → sprite origin maps to SVG point (95, 70)
+      // Oven flame column center at SVG ~(79, 107) → scale 0.7 offset:
+      const fx = this.chefHeli.x + (79 - 95) * 0.7; // ≈ -11
+      const fy = this.chefHeli.y + (107 - 70) * 0.7; // ≈ +26
+      const f1 = 0.72 + Math.sin(this.ovenFlameTime * 3.1) * 0.14;
+      const f2 = 0.72 + Math.sin(this.ovenFlameTime * 7.5 + 1.2) * 0.16;
+      fl.fillStyle(0xff4400, f1 * 0.9);
+      fl.fillEllipse(fx, fy + 5, 18, 7);
+      fl.fillStyle(0xffaa00, f2);
+      fl.fillEllipse(fx, fy, 13, 10);
+      fl.fillStyle(0xffee40, f1 * 0.9);
+      fl.fillEllipse(fx, fy - 6, 8, 8);
+      fl.fillStyle(0xffffff, f2 * 0.55);
+      fl.fillEllipse(fx, fy - 10, 5, 5);
+    }
   }
 
   updateKittenMovement(delta) {

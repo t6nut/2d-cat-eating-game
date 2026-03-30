@@ -1,140 +1,172 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 140">
+  <defs>
+    <clipPath id="domeClip">
+      <ellipse cx="79" cy="77" rx="33" ry="24"/>
+    </clipPath>
+  </defs>
 
-  <!-- ===== PIZZA OVEN WITH BALLOONS ===== -->
+  <!-- ===== 5 BALLOONS ===== -->
+  <!-- Strings from balloon knots down to oven chimney cap -->
+  <line x1="40" y1="35" x2="67" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
+  <line x1="62" y1="29" x2="72" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
+  <line x1="82" y1="27" x2="79" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
+  <line x1="100" y1="28" x2="86" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
+  <line x1="120" y1="34" x2="95" y2="58" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
 
-  <!-- Balloon strings -->
-  <line x1="25" y1="36" x2="38" y2="56" stroke="#998877" stroke-width="1.3" opacity="0.8"/>
-  <line x1="62" y1="31" x2="55" y2="56" stroke="#998877" stroke-width="1.3" opacity="0.8"/>
-  <line x1="97" y1="34" x2="72" y2="56" stroke="#998877" stroke-width="1.3" opacity="0.8"/>
+  <!-- Balloon A — Red -->
+  <circle cx="40" cy="22" r="13" fill="#e03030"/>
+  <ellipse cx="35" cy="14" rx="5" ry="3.5" fill="#ff9090" opacity="0.6"/>
+  <ellipse cx="40" cy="35" rx="3" ry="1.5" fill="#a82020"/>
 
-  <!-- Left balloon (red) -->
-  <circle cx="25" cy="20" r="17" fill="#e83030"/>
-  <ellipse cx="18" cy="12" rx="6" ry="4" fill="#ff9090" opacity="0.6"/>
-  <ellipse cx="25" cy="36" rx="4" ry="2" fill="#b02020"/>
+  <!-- Balloon B — Yellow -->
+  <circle cx="62" cy="15" r="14" fill="#f5d020"/>
+  <ellipse cx="56" cy="8" rx="5.5" ry="3.5" fill="#ffff80" opacity="0.65"/>
+  <ellipse cx="62" cy="29" rx="3.5" ry="1.8" fill="#b09000"/>
 
-  <!-- Center balloon (yellow) -->
-  <circle cx="62" cy="13" r="19" fill="#f5d020"/>
-  <ellipse cx="55" cy="5" rx="7" ry="5" fill="#fff080" opacity="0.65"/>
-  <ellipse cx="62" cy="31" rx="5" ry="2.5" fill="#c0a000"/>
+  <!-- Balloon C — Green -->
+  <circle cx="82" cy="14" r="13" fill="#28c040"/>
+  <ellipse cx="76" cy="7" rx="5" ry="3" fill="#80ff90" opacity="0.6"/>
+  <ellipse cx="82" cy="27" rx="3" ry="1.5" fill="#108020"/>
 
-  <!-- Right balloon (blue) -->
-  <circle cx="97" cy="18" r="17" fill="#3a7add"/>
-  <ellipse cx="90" cy="10" rx="6" ry="4" fill="#90bfff" opacity="0.6"/>
-  <ellipse cx="97" cy="34" rx="4" ry="2" fill="#2050a0"/>
+  <!-- Balloon D — Blue -->
+  <circle cx="100" cy="15" r="13" fill="#3468d8"/>
+  <ellipse cx="94" cy="8" rx="5" ry="3" fill="#88bfff" opacity="0.6"/>
+  <ellipse cx="100" cy="28" rx="3" ry="1.5" fill="#1040a0"/>
 
-  <!-- Chimney cap -->
-  <rect x="44" y="34" width="22" height="5" fill="#4a4545" rx="2"/>
-  <!-- Chimney shaft -->
-  <rect x="47" y="38" width="16" height="20" fill="#5a5555" rx="1"/>
+  <!-- Balloon E — Purple -->
+  <circle cx="120" cy="22" r="12" fill="#9030c0"/>
+  <ellipse cx="114" cy="15" rx="4.5" ry="3" fill="#d080ff" opacity="0.6"/>
+  <ellipse cx="120" cy="34" rx="3" ry="1.5" fill="#601080"/>
 
-  <!-- Oven body (stone grey-brown) -->
-  <rect x="8" y="56" width="110" height="54" fill="#8a8278" rx="3"/>
+  <!-- ===== OVEN CHIMNEY ===== -->
+  <rect x="71" y="57" width="16" height="21" fill="#8a5550" rx="1"/>
+  <rect x="67" y="54" width="24" height="7" fill="#7a4540" rx="2"/>
 
-  <!-- Brick seams (horizontal) -->
-  <rect x="8" y="65" width="110" height="2.5" fill="#5e584e" opacity="0.4"/>
-  <rect x="8" y="76" width="110" height="2.5" fill="#5e584e" opacity="0.4"/>
-  <rect x="8" y="87" width="110" height="2.5" fill="#5e584e" opacity="0.4"/>
-  <rect x="8" y="98" width="110" height="2.5" fill="#5e584e" opacity="0.4"/>
+  <!-- ===== OVEN DOME (red, round top) ===== -->
+  <ellipse cx="79" cy="77" rx="33" ry="24" fill="#cc2000"/>
+  <!-- Brick lines on dome (clipped to dome shape) -->
+  <g clip-path="url(#domeClip)">
+    <line x1="46" y1="68" x2="112" y2="68" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    <line x1="46" y1="77" x2="112" y2="77" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    <line x1="62" y1="56" x2="62" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="79" y1="53" x2="79" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="96" y1="56" x2="96" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="54" y1="68" x2="54" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="71" y1="68" x2="71" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="88" y1="68" x2="88" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="105" y1="68" x2="105" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+  </g>
 
-  <!-- Brick seams (vertical, staggered rows) -->
-  <rect x="30" y="56" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="57" y="56" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="84" y="56" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="20" y="67" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="47" y="67" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="74" y="67" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
-  <rect x="101" y="67" width="1.5" height="11" fill="#5e584e" opacity="0.35"/>
+  <!-- ===== OVEN BODY (red bricks) ===== -->
+  <rect x="46" y="77" width="66" height="47" fill="#cc2000"/>
 
-  <!-- Oven door frame (lighter stone arch) -->
-  <ellipse cx="63" cy="75" rx="30" ry="10" fill="#a0988e"/>
-  <rect x="33" y="75" width="60" height="33" fill="#a0988e"/>
+  <!-- Horizontal brick seams on body -->
+  <line x1="46" y1="87" x2="112" y2="87" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="46" y1="97" x2="112" y2="97" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="46" y1="107" x2="112" y2="107" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="46" y1="117" x2="112" y2="117" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
 
-  <!-- Oven door opening (dark) -->
-  <ellipse cx="63" cy="77" rx="24" ry="8" fill="#1a0d08"/>
-  <rect x="39" y="77" width="48" height="30" fill="#1a0d08"/>
+  <!-- Vertical brick seams (staggered rows) -->
+  <!-- row 77-87 -->
+  <line x1="62" y1="77" x2="62" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="77" x2="79" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="96" y1="77" x2="96" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 87-97 -->
+  <line x1="54" y1="87" x2="54" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="71" y1="87" x2="71" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="88" y1="87" x2="88" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="105" y1="87" x2="105" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 97-107 -->
+  <line x1="62" y1="97" x2="62" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="97" x2="79" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="96" y1="97" x2="96" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 107-117 -->
+  <line x1="54" y1="107" x2="54" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="71" y1="107" x2="71" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="88" y1="107" x2="88" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="105" y1="107" x2="105" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 117-124 -->
+  <line x1="62" y1="117" x2="62" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="117" x2="79" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="96" y1="117" x2="96" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
 
-  <!-- Flame inside oven -->
-  <ellipse cx="63" cy="100" rx="18" ry="6" fill="#ff5500" opacity="0.9"/>
-  <ellipse cx="63" cy="94" rx="12" ry="8" fill="#ffaa00" opacity="0.9"/>
-  <polygon points="57,88 63,76 69,88" fill="#ffe060" opacity="0.95"/>
+  <!-- ===== OVEN DOOR ARCH FRAME ===== -->
+  <ellipse cx="79" cy="88" rx="22" ry="15" fill="#dd2800"/>
+  <rect x="57" y="88" width="44" height="34" fill="#dd2800"/>
 
-  <!-- Oven base plate -->
-  <rect x="4" y="108" width="118" height="7" fill="#686058" rx="2"/>
-  <!-- Oven legs -->
-  <rect x="16" y="113" width="14" height="6" fill="#545048"/>
-  <rect x="96" y="113" width="14" height="6" fill="#545048"/>
+  <!-- ===== OVEN DOOR OPENING (dark cavity) ===== -->
+  <ellipse cx="79" cy="90" rx="17" ry="11" fill="#1a0800"/>
+  <rect x="62" y="90" width="34" height="31" fill="#1a0800"/>
 
-  <!-- ===== CHEF MARIO ===== -->
+  <!-- Static flame (Phaser animated overlay will cover this in-game) -->
+  <ellipse cx="79" cy="115" rx="13" ry="5" fill="#ff4400" opacity="0.9"/>
+  <ellipse cx="79" cy="107" rx="9" ry="8" fill="#ffaa00" opacity="0.9"/>
+  <polygon points="74,97 79,87 84,97" fill="#fff060" opacity="0.95"/>
 
-  <!-- Chef hat: puff top (big round dome) -->
-  <circle cx="162" cy="34" r="15" fill="#f4f4f4"/>
-  <circle cx="162" cy="34" r="15" fill="none" stroke="#e0e0e0" stroke-width="1"/>
-  <!-- Hat body (tall white cylinder) -->
-  <rect x="151" y="44" width="22" height="20" fill="#f4f4f4" rx="2"/>
-  <!-- Hat brim (wide, slightly grey) -->
-  <rect x="145" y="62" width="34" height="7" fill="#e8e8e8" rx="3"/>
+  <!-- ===== OVEN BASE PLATE & LEGS ===== -->
+  <rect x="42" y="123" width="74" height="7" fill="#882000" rx="2"/>
+  <rect x="52" y="128" width="12" height="5" fill="#661800"/>
+  <rect x="90" y="128" width="12" height="5" fill="#661800"/>
 
-  <!-- Head (skin tone) -->
-  <circle cx="162" cy="79" r="14" fill="#f5c9a0"/>
+  <!-- ===== CHEF MARIO (right side, left arm grips oven) ===== -->
+
+  <!-- Hat puff dome -->
+  <circle cx="158" cy="59" r="14" fill="#f6f6f6"/>
+  <circle cx="158" cy="59" r="14" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+  <!-- Hat cylinder body -->
+  <rect x="148" y="69" width="20" height="17" fill="#f6f6f6" rx="2"/>
+  <!-- Hat brim -->
+  <rect x="141" y="84" width="34" height="6" fill="#e8e8e8" rx="3"/>
+
+  <!-- Head -->
+  <circle cx="158" cy="99" r="13" fill="#f5c49e"/>
   <!-- Ears -->
-  <ellipse cx="149" cy="79" rx="4.5" ry="5.5" fill="#e8b890"/>
-  <ellipse cx="175" cy="79" rx="4.5" ry="5.5" fill="#e8b890"/>
+  <ellipse cx="146" cy="99" rx="4" ry="5" fill="#e8a870"/>
+  <ellipse cx="170" cy="99" rx="4" ry="5" fill="#e8a870"/>
 
-  <!-- Thick black eyebrows (very prominent, Mario-style) -->
-  <rect x="152" y="68" width="10" height="4.5" fill="#1a1010" rx="2"/>
-  <rect x="164" y="68" width="10" height="4.5" fill="#1a1010" rx="2"/>
+  <!-- Thick Mario eyebrows -->
+  <rect x="148" y="89" width="9" height="4" fill="#1a0e08" rx="2"/>
+  <rect x="163" y="89" width="9" height="4" fill="#1a0e08" rx="2"/>
 
-  <!-- Eyes (warm dark brown) -->
-  <circle cx="157" cy="75" r="3" fill="#2a1808"/>
-  <circle cx="167" cy="75" r="3" fill="#2a1808"/>
-  <circle cx="156" cy="74.2" r="1.1" fill="#fff" opacity="0.75"/>
-  <circle cx="166" cy="74.2" r="1.1" fill="#fff" opacity="0.75"/>
+  <!-- Eyes -->
+  <circle cx="153" cy="95" r="2.8" fill="#2a1a08"/>
+  <circle cx="163" cy="95" r="2.8" fill="#2a1a08"/>
+  <circle cx="152.2" cy="94.2" r="1" fill="#fff" opacity="0.75"/>
+  <circle cx="162.2" cy="94.2" r="1" fill="#fff" opacity="0.75"/>
 
-  <!-- Nose (big, round, slightly red) -->
-  <ellipse cx="162" cy="80" rx="4.5" ry="4" fill="#e89a7a"/>
+  <!-- Nose -->
+  <ellipse cx="158" cy="100" rx="4" ry="3.5" fill="#e08060"/>
 
-  <!-- Rosy cheeks -->
-  <ellipse cx="149" cy="82" rx="4.5" ry="3" fill="#e89090" opacity="0.45"/>
-  <ellipse cx="175" cy="82" rx="4.5" ry="3" fill="#e89090" opacity="0.45"/>
+  <!-- Big bushy mustache -->
+  <ellipse cx="152" cy="107" rx="9" ry="5.5" fill="#1a0e08"/>
+  <ellipse cx="164" cy="107" rx="9" ry="5.5" fill="#1a0e08"/>
+  <ellipse cx="158" cy="104" rx="3.5" ry="2.8" fill="#f5c49e"/>
+  <ellipse cx="144" cy="104" rx="4.5" ry="3" fill="#1a0e08" transform="rotate(-25 144 104)"/>
+  <ellipse cx="172" cy="104" rx="4.5" ry="3" fill="#1a0e08" transform="rotate(25 172 104)"/>
 
-  <!-- BIG BUSHY MUSTACHE (the Mario signature) -->
-  <ellipse cx="155" cy="87" rx="10" ry="6" fill="#1a1010"/>
-  <ellipse cx="169" cy="87" rx="10" ry="6" fill="#1a1010"/>
-  <!-- Centre gap (skin showing between mustache halves) -->
-  <ellipse cx="162" cy="85" rx="4" ry="3" fill="#f5c9a0"/>
-  <!-- Curl tips -->
-  <ellipse cx="146" cy="84" rx="5" ry="3.5" fill="#1a1010" transform="rotate(-30 146 84)"/>
-  <ellipse cx="178" cy="84" rx="5" ry="3.5" fill="#1a1010" transform="rotate(30 178 84)"/>
+  <!-- Body (white jacket, chubby) -->
+  <ellipse cx="158" cy="123" rx="16" ry="14" fill="#f6f6f6"/>
+  <!-- Red belly panel -->
+  <rect x="151" y="114" width="14" height="16" fill="#cc2828" opacity="0.5" rx="2"/>
+  <!-- Buttons -->
+  <circle cx="154" cy="117" r="1.6" fill="#d0d0d0"/>
+  <circle cx="162" cy="117" r="1.6" fill="#d0d0d0"/>
+  <circle cx="154" cy="124" r="1.6" fill="#d0d0d0"/>
+  <circle cx="162" cy="124" r="1.6" fill="#d0d0d0"/>
 
-  <!-- Body (white chef jacket, rotund) -->
-  <ellipse cx="162" cy="104" rx="16" ry="15" fill="#f4f4f4"/>
-  <!-- Red front panel (Mario belly) -->
-  <rect x="156" y="96" width="12" height="16" fill="#cc2828" opacity="0.55" rx="2"/>
-  <!-- Double-breasted buttons -->
-  <circle cx="159" cy="98" r="1.8" fill="#d8d8d8"/>
-  <circle cx="165" cy="98" r="1.8" fill="#d8d8d8"/>
-  <circle cx="159" cy="105" r="1.8" fill="#d8d8d8"/>
-  <circle cx="165" cy="105" r="1.8" fill="#d8d8d8"/>
+  <!-- LEFT ARM reaching to grip oven right edge -->
+  <!-- Upper arm (sleeve, white) -->
+  <ellipse cx="145" cy="119" rx="7" ry="11" fill="#f6f6f6" transform="rotate(-35 145 119)"/>
+  <!-- Forearm continuing toward oven -->
+  <ellipse cx="130" cy="112" rx="6" ry="9" fill="#f6f6f6" transform="rotate(-25 130 112)"/>
+  <!-- Hand gripping oven right wall -->
+  <circle cx="116" cy="104" r="6" fill="#f5c49e"/>
+  <!-- Thumb -->
+  <ellipse cx="111" cy="100" rx="3.2" ry="2.2" fill="#e8a870" transform="rotate(-30 111 100)"/>
 
-  <!-- Left arm (down, resting by side) -->
-  <ellipse cx="148" cy="106" rx="6" ry="10" fill="#f4f4f4" transform="rotate(-12 148 106)"/>
-  <ellipse cx="143" cy="114" rx="4.5" ry="4" fill="#f5c9a0"/>
-
-  <!-- Right arm (raised UP — throwing pose!) -->
-  <!-- Upper arm angled upward-right -->
-  <ellipse cx="178" cy="97" rx="6" ry="10" fill="#f4f4f4" transform="rotate(42 178 97)"/>
-  <!-- Forearm continuing up -->
-  <ellipse cx="187" cy="84" rx="5" ry="8" fill="#f4f4f4" transform="rotate(24 187 84)"/>
-  <!-- Throwing hand/fist -->
-  <circle cx="193" cy="73" r="7" fill="#f5c9a0"/>
-
-  <!-- Pizza slice held in throwing hand -->
-  <polygon points="193,66 183,76 203,76" fill="#f5d020" opacity="0.92"/>
-  <!-- Pizza toppings (small circles) -->
-  <circle cx="187" cy="73" r="2" fill="#d03020" opacity="0.85"/>
-  <circle cx="193" cy="71" r="2" fill="#d03020" opacity="0.85"/>
-  <circle cx="199" cy="74" r="2" fill="#d03020" opacity="0.85"/>
-  <!-- Cheese edge on pizza -->
-  <line x1="183" y1="76" x2="203" y2="76" stroke="#e8c840" stroke-width="2"/>
+  <!-- RIGHT ARM (relaxed, slightly raised) -->
+  <ellipse cx="170" cy="117" rx="6.5" ry="10" fill="#f6f6f6" transform="rotate(20 170 117)"/>
+  <!-- Right hand -->
+  <circle cx="177" cy="108" r="5.5" fill="#f5c49e"/>
 
 </svg>
