@@ -58,6 +58,9 @@ export class TitleScene extends Phaser.Scene {
     this.menuJetpack = null;
     this.menuJetpackFlames = null;
     this.menuBackdropBuildings = [];
+    this.menuDesertDecor = [];
+    this.menuBeachDecor = [];
+    this.menuMoonDecor = [];
   }
 
   preload() {
@@ -169,7 +172,7 @@ export class TitleScene extends Phaser.Scene {
 
     // Pre-select defaults so the game is ready to Start immediately
     this.selectOption('character', 'orange');
-    this.selectOption('mode', 'medium');
+    this.selectOption('mode', 'easy');
     this.selectOption('theme', 'day');
     this.selectOption('map', 'city');
     this.selectOption('enemies', 'zombies');
@@ -194,6 +197,21 @@ export class TitleScene extends Phaser.Scene {
       const building = this.add.rectangle(x, H - 172 - h * 0.5, 76, h, 0x273348, 0.86).setDepth(2);
       this.menuBackdropBuildings.push(building);
     }
+
+    const duneA = this.add.ellipse(310, H - 120, 620, 180, 0xe7bf7e, 0.75).setDepth(2).setVisible(false);
+    const duneB = this.add.ellipse(940, H - 100, 760, 210, 0xd8b06a, 0.72).setDepth(2).setVisible(false);
+    this.menuDesertDecor.push(duneA, duneB);
+
+    const sea = this.add.rectangle(W / 2, H * 0.64, W, H * 0.5, 0x4fc4dc, 0.62).setDepth(2).setVisible(false);
+    const waveA = this.add.ellipse(300, H * 0.52, 520, 38, 0xbef6ff, 0.48).setDepth(2).setVisible(false);
+    const waveB = this.add.ellipse(880, H * 0.56, 640, 44, 0xbef6ff, 0.44).setDepth(2).setVisible(false);
+    this.menuBeachDecor.push(sea, waveA, waveB);
+
+    const moonSurface = this.add.ellipse(W / 2, H + 120, 1600, 520, 0x8f97ab, 0.72).setDepth(2).setVisible(false);
+    const moonRingA = this.add.ellipse(W / 2, H + 125, 1280, 420, 0xdde3ef, 0.12).setDepth(2).setVisible(false);
+    const moonRingB = this.add.ellipse(W / 2, H + 135, 1140, 360, 0xc7cdd8, 0.1).setDepth(2).setVisible(false);
+    const earth = this.add.circle(132, 100, 24, 0x5ca7f3, 0.9).setDepth(3).setVisible(false);
+    this.menuMoonDecor.push(moonSurface, moonRingA, moonRingB, earth);
 
     for (let i = 0; i < 16; i += 1) {
       const cloud = this.add.ellipse(60 + i * 84, 70 + (i % 2) * 22, 90, 32, 0xe8f7ff, 0.58).setDepth(2);
@@ -246,9 +264,24 @@ export class TitleScene extends Phaser.Scene {
     this.menuSun.setVisible(!isNight && !isMoon);
     this.menuMoon.setVisible(isNight);
 
+    const showCity = map === 'city';
+    const showDesert = map === 'desert';
+    const showBeach = map === 'beach';
+    const showMoon = map === 'moon';
+
     const buildingColor = isNight ? 0x273348 : 0x7f8ea4;
     for (let i = 0; i < this.menuBackdropBuildings.length; i += 1) {
+      this.menuBackdropBuildings[i].setVisible(showCity);
       this.menuBackdropBuildings[i].setFillStyle(buildingColor, 0.9);
+    }
+    for (let i = 0; i < this.menuDesertDecor.length; i += 1) {
+      this.menuDesertDecor[i].setVisible(showDesert);
+    }
+    for (let i = 0; i < this.menuBeachDecor.length; i += 1) {
+      this.menuBeachDecor[i].setVisible(showBeach);
+    }
+    for (let i = 0; i < this.menuMoonDecor.length; i += 1) {
+      this.menuMoonDecor[i].setVisible(showMoon);
     }
 
     if (this.heli) {

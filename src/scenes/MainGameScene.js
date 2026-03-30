@@ -1,5 +1,3 @@
-import { drawNightBackground } from '../utils.js';
-
 const WORLD_WIDTH = 1280;
 const WORLD_HEIGHT = 720;
 
@@ -269,31 +267,20 @@ export class MainScene extends Phaser.Scene {
 
     if (mapKey === 'city') {
       const cityNight = this.currentThemeKey === 'night';
-      if (cityNight) {
-        // Reuse the title-screen city visual language for city-night map.
-        this.bgSky.setVisible(false);
-        this.bgGround.setVisible(false);
-        const cityBackdrop = drawNightBackground(this, WORLD_WIDTH, WORLD_HEIGHT);
-        if (cityBackdrop?.setDepth) {
-          cityBackdrop.setDepth(0);
-        }
-        if (cityBackdrop) {
-          this.backgroundElements.push(cityBackdrop);
-        }
-      } else {
-        this.bgSky.setVisible(true);
-        this.bgGround.setVisible(true);
-        this.bgSky.setFillStyle(0x95d5ff, 1);
-        this.bgGround.setFillStyle(0x6d7686, 1);
-        const sun = this.add.circle(1030, 86, 36, 0xffed9e, 0.92).setDepth(2);
-        this.backgroundElements.push(sun);
+      this.bgSky.setVisible(true);
+      this.bgGround.setVisible(true);
+      this.bgSky.setFillStyle(cityNight ? 0x101a34 : 0x95d5ff, cityNight ? 0.94 : 1);
+      this.bgGround.setFillStyle(cityNight ? 0x3a4558 : 0x6d7686, 1);
 
-        for (let i = 0; i < 11; i += 1) {
-          const x = 54 + i * 122;
-          const h = 90 + (i % 4) * 26;
-          const building = this.add.rectangle(x, WORLD_HEIGHT - 170 - h * 0.5, 78, h, 0x7f8ea4, 0.95).setDepth(2);
-          this.backgroundElements.push(building);
-        }
+      const sunOrMoon = this.add.circle(1030, 86, 36, cityNight ? 0xe9f3ff : 0xffed9e, cityNight ? 0.86 : 0.92).setDepth(2);
+      this.backgroundElements.push(sunOrMoon);
+
+      for (let i = 0; i < 11; i += 1) {
+        const x = 54 + i * 122;
+        const h = 90 + (i % 4) * 26;
+        const buildingColor = cityNight ? 0x273348 : 0x7f8ea4;
+        const building = this.add.rectangle(x, WORLD_HEIGHT - 170 - h * 0.5, 78, h, buildingColor, 0.95).setDepth(2);
+        this.backgroundElements.push(building);
       }
 
       const skylineBaseY = Math.floor(WORLD_HEIGHT * 0.75);
@@ -686,16 +673,22 @@ export class MainScene extends Phaser.Scene {
       }
     }
 
-    const zombie = this.zombieGroup.get(startX, this.getGroundSurfaceY() - 14, textureKey);
+    const zombie = this.zombieGroup.get(startX, this.getGroundSurfaceY(), textureKey);
     if (!zombie) {
       return;
     }
+    if (zombie.shadow) {
+      zombie.shadow.destroy();
+      zombie.shadow = null;
+    }
+    zombie.shadow = this.add.ellipse(startX, this.getGroundSurfaceY(), 36, 12, 0x000000, 0.2).setDepth(6);
     if (zombie.umbrella) {
       zombie.umbrella.destroy();
       zombie.umbrella = null;
     }
     zombie.setActive(true);
     zombie.setVisible(true);
+    zombie.setOrigin(0.5, 1);
     zombie.body.enable = true;
     zombie.setVelocityX(velocityX);
     zombie.setDepth(7);
@@ -969,6 +962,10 @@ export class MainScene extends Phaser.Scene {
     const stomped = this.kittenPrevVelY > 120;
     if (stomped) {
       zombie.alive = false;
+      if (zombie.shadow) {
+        zombie.shadow.destroy();
+        zombie.shadow = null;
+      }
       if (zombie.umbrella) {
         zombie.umbrella.destroy();
         zombie.umbrella = null;
@@ -1365,9 +1362,9 @@ export class MainScene extends Phaser.Scene {
       CHARACTER_HITBOX.offsetY + Math.round(CHARACTER_HITBOX.height - bodyH),
     );
     const groundTop = this.getGroundSurfaceY();
-    if (enemy.body.bottom >= groundTop - 24) {
+    if (enemy.body.bottom >= groundTop - 24 || enemy.body.velocity.y >= 0) {
       enemy.body.y = groundTop - enemy.body.height;
-      enemy.y = enemy.body.y + enemy.body.height;
+      enemy.y = groundTop;
       enemy.body.velocity.y = 0;
     }
   }
@@ -1618,6 +1615,15 @@ export class MainScene extends Phaser.Scene {
       this.rocketShadow.y = this.getGroundSurfaceY() + 1;
     }
     const enemies = this.zombieGroup.getChildren();
+    for (let i = 0; i < enemies.length; i += 1) {
+      const enemy = enemies[i];
+      if (enemy.shadow) {
+        enemy.shadow.setVisible(enemy.active);
+        enemy.shadow.x = enemy.x;
+        enemy.shadow.y = this.getGroundSurfaceY() + 1;
+        enemy.shadow.width = 36 * Phaser.Math.Clamp(enemy.growthScale || 1, 1, 2.2);
+      }
+    }
 
     const pizzaItems = this.pizzaGroup.getChildren();
     for (let i = 0; i < pizzaItems.length; i += 1) {
@@ -1736,6 +1742,10 @@ export class MainScene extends Phaser.Scene {
     for (let i = 0; i < children.length; i += 1) {
       const zombie = children[i];
       if (zombie.active && (zombie.x < -60 || zombie.x > WORLD_WIDTH + 60)) {
+        if (zombie.shadow) {
+          zombie.shadow.destroy();
+          zombie.shadow = null;
+        }
         if (zombie.umbrella) {
           zombie.umbrella.destroy();
           zombie.umbrella = null;
@@ -1883,7 +1893,7 @@ export class MainScene extends Phaser.Scene {
       // Keep enemies planted on ground so they cannot drift or sink below the floor.
       zombie.body.y = groundTop - zombie.body.height;
       zombie.body.velocity.y = 0;
-      zombie.y = zombie.body.y + zombie.body.height;
+      zombie.y = groundTop;
 
       if (dayMode && zombie.enemyType === 'vampire') {
         if (!zombie.umbrella || !zombie.umbrella.active) {
