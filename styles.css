@@ -11,44 +11,33 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100dvh;
+  background: #040812;
   font-family: "Courier New", Courier, monospace;
-  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
   color: var(--ink);
 }
 
 .shell {
-  width: min(96vw, 1340px);
-  display: grid;
-  gap: 0.65rem;
+  width: 100vw;
+  height: 100dvh;
+  display: block;
 }
 
 #game {
-  border: 3px solid #1a3a7a;
-  border-radius: 6px;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  box-shadow: 0 0 40px rgba(30, 80, 200, 0.3), 0 10px 40px rgba(0, 0, 0, 0.7);
 }
 
 canvas {
   display: block;
-  width: 100%;
-  height: auto;
   image-rendering: pixelated;
 }
 
 .hint {
-  margin: 0;
-  text-align: center;
-  background: rgba(10, 20, 50, 0.8);
-  border: 1px solid #1a3a7a;
-  border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  font-size: clamp(0.8rem, 2vw, 0.95rem);
-  color: #6688cc;
-  letter-spacing: 1px;
+  display: none;
 }
 
 /* ===== PORTRAIT OVERLAY ===== */
@@ -100,21 +89,34 @@ canvas {
 #mobile-controls {
   display: none;
   position: fixed;
-  bottom: env(safe-area-inset-bottom, 0px);
-  left: 0;
-  right: 0;
-  padding: 0 14px 14px;
-  justify-content: space-between;
-  align-items: flex-end;
+  inset: 0;
   z-index: 100;
   pointer-events: none;
 }
 
 .ctrl-group {
+  position: absolute;
   display: flex;
   gap: 10px;
-  align-items: flex-end;
   pointer-events: all;
+}
+
+.ctrl-group.ctrl-left {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  left: 16px;
+  align-items: flex-end;
+}
+
+.ctrl-group.ctrl-right {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  right: 16px;
+  align-items: flex-end;
+}
+
+.ctrl-group.ctrl-menu {
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  right: 14px;
+  align-items: flex-start;
 }
 
 .ctrl-btn {
@@ -156,7 +158,13 @@ canvas {
   border-color: rgba(130, 200, 255, 0.7);
 }
 
+.ctrl-btn.ctrl-menu-btn {
+  font-size: 1.3rem;
+  background: rgba(40, 10, 70, 0.82);
+  border-color: rgba(180, 100, 255, 0.7);
+}
+
 /* Only show on touch devices */
 @media (hover: none) and (pointer: coarse) {
-  #mobile-controls { display: flex; }
+  #mobile-controls { display: block; }
 }

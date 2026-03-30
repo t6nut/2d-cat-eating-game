@@ -538,7 +538,8 @@ export class MainScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if (Phaser.Input.Keyboard.JustDown(this.restartKey)) {
+    if (Phaser.Input.Keyboard.JustDown(this.restartKey) ||
+      (window._mobile?.menuJustDown && ((window._mobile.menuJustDown = false) || true))) {
       this.saveCharacterState();
       this.scene.start('TitleScene');
       return;
