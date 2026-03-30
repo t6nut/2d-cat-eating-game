@@ -298,6 +298,7 @@ export class TitleScene extends Phaser.Scene {
 
     if (this.heli) {
       this.heli.setTexture(isMoon ? 'ufoSprite' : 'pizzaOven');
+      this.heli.setScale(isMoon ? 2 : 1);
     }
     if (this.vehicleDescText) {
       this.vehicleDescText.setText(isMoon
@@ -321,13 +322,16 @@ export class TitleScene extends Phaser.Scene {
     const catX = this.charPreviewSprite ? this.charPreviewSprite.x : W / 2;
     const catY = this.charPreviewSprite ? this.charPreviewSprite.y : 300;
     const s = 1.4;
-    const packX = catX - 22;
-    const packY = catY + 8;
+    const packX = catX;
+    const packY = catY + 4;
 
     this.menuJetpack.fillStyle(0x5d6573, 0.96);
     this.menuJetpack.fillRoundedRect(packX - 8 * s, packY - 10 * s, 16 * s, 20 * s, 3 * s);
     this.menuJetpack.fillStyle(0x93a3b8, 1);
     this.menuJetpack.fillRect(packX - 3 * s, packY - 5 * s, 6 * s, 8 * s);
+    this.menuJetpack.fillStyle(0x2d3340, 0.9);
+    this.menuJetpack.fillRect(packX - 9.2 * s, packY + 2 * s, 2.6 * s, 8 * s);
+    this.menuJetpack.fillRect(packX + 6.6 * s, packY + 2 * s, 2.6 * s, 8 * s);
 
     const flicker = 0.8 + Math.sin(time * 0.018) * 0.2;
     const flameLen = 26 * flicker;

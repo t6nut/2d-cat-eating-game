@@ -2,11 +2,22 @@
   <rect width="48" height="28" fill="none"/>
   <rect x="16" y="4" width="16" height="6" fill="#8fe1ff"/>
   <rect x="14" y="6" width="20" height="4" fill="#6bc8f0"/>
-  <rect x="6" y="12" width="36" height="6" fill="#9aa6b6"/>
-  <rect x="4" y="14" width="40" height="4" fill="#7f8ea0"/>
-  <rect x="8" y="18" width="32" height="3" fill="#5f6f85"/>
-  <rect x="10" y="12" width="3" height="3" fill="#ffd76a"/>
-  <rect x="18" y="12" width="3" height="3" fill="#ffd76a"/>
-  <rect x="26" y="12" width="3" height="3" fill="#ffd76a"/>
-  <rect x="34" y="12" width="3" height="3" fill="#ffd76a"/>
+  <!-- Dog pilot with chef hat inside cockpit -->
+  <rect x="21" y="1" width="6" height="1" fill="#f6f6f6"/>
+  <rect x="20" y="2" width="8" height="2" fill="#f6f6f6"/>
+  <rect x="22" y="4" width="4" height="1" fill="#ececec"/>
+  <rect x="19" y="5" width="2" height="2" fill="#b9865f"/>
+  <rect x="27" y="5" width="2" height="2" fill="#b9865f"/>
+  <rect x="21" y="5" width="6" height="4" fill="#d9aa7a"/>
+  <rect x="22" y="6" width="1" height="1" fill="#1f1f1f"/>
+  <rect x="25" y="6" width="1" height="1" fill="#1f1f1f"/>
+  <rect x="23" y="7" width="2" height="1" fill="#52331f"/>
+  <rect x="20" y="8" width="8" height="1" fill="#c99768"/>
+  <rect x="6" y="10" width="36" height="6" fill="#9aa6b6"/>
+  <rect x="4" y="12" width="40" height="4" fill="#7f8ea0"/>
+  <rect x="8" y="16" width="32" height="3" fill="#5f6f85"/>
+  <rect x="10" y="10" width="3" height="3" fill="#ffd76a"/>
+  <rect x="18" y="10" width="3" height="3" fill="#ffd76a"/>
+  <rect x="26" y="10" width="3" height="3" fill="#ffd76a"/>
+  <rect x="34" y="10" width="3" height="3" fill="#ffd76a"/>
 </svg>

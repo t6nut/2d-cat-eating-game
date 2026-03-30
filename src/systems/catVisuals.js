@@ -16,8 +16,9 @@ export function createAstronautHelmet(scene) {
 }
 
 export function createJetpackVisuals(scene) {
-  scene.jetpackPack = scene.add.graphics().setDepth(10);
-  scene.jetpackFlames = scene.add.graphics().setDepth(9);
+  // Keep jetpack behind the cat sprite so only edges/nozzles peek out.
+  scene.jetpackPack = scene.add.graphics().setDepth(7);
+  scene.jetpackFlames = scene.add.graphics().setDepth(7);
 }
 
 export function attachDropShadow(scene, item, baseWidth, baseHeight, alpha = 0.15) {
@@ -216,11 +217,10 @@ export function drawJetpackVisual(scene, active) {
     return;
   }
 
-  const dir = scene.facingDir || 1;
   const scale = scene.sizeMultiplier;
-  const packX = scene.kitten.x - dir * 8 * scale;
-  const packY = scene.kitten.y - 16 * scale;
-  const packW = 10 * scale;
+  const packX = scene.kitten.x;
+  const packY = scene.kitten.y - 7 * scale;
+  const packW = 11 * scale;
   const packH = 14 * scale;
 
   scene.jetpackPack.clear();
@@ -229,7 +229,9 @@ export function drawJetpackVisual(scene, active) {
   scene.jetpackPack.fillStyle(0x939db0, 1);
   scene.jetpackPack.fillRect(packX - 2 * scale, packY - 3 * scale, 4 * scale, 5 * scale);
   scene.jetpackPack.fillStyle(0x2d3340, 0.9);
-  scene.jetpackPack.fillRect(packX - (dir < 0 ? 1.5 : 4.5) * scale, packY - 4 * scale, 3 * scale, 8 * scale);
+  // Side pipes near lower back remain visible from behind the cat body.
+  scene.jetpackPack.fillRect(packX - 7.2 * scale, packY + 1.2 * scale, 2.4 * scale, 6 * scale);
+  scene.jetpackPack.fillRect(packX + 4.8 * scale, packY + 1.2 * scale, 2.4 * scale, 6 * scale);
 
   scene.jetpackFlames.clear();
   if (!active) {
@@ -238,9 +240,9 @@ export function drawJetpackVisual(scene, active) {
 
   const flicker = 0.75 + Math.sin(scene.time.now * 0.03) * 0.25;
   const flameLen = 10 * scale * flicker;
-  const leftNozzleX = packX - 2 * scale;
-  const rightNozzleX = packX + 2 * scale;
-  const nozzleY = packY + 7 * scale;
+  const leftNozzleX = packX - 6 * scale;
+  const rightNozzleX = packX + 6 * scale;
+  const nozzleY = packY + 8 * scale;
 
   scene.jetpackFlames.fillStyle(0xffb347, 0.95);
   scene.jetpackFlames.fillTriangle(leftNozzleX - 1.5 * scale, nozzleY, leftNozzleX + 1.5 * scale, nozzleY, leftNozzleX, nozzleY + flameLen);

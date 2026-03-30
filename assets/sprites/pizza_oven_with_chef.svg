@@ -1,112 +1,123 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 140">
   <defs>
     <clipPath id="domeClip">
-      <ellipse cx="79" cy="77" rx="33" ry="24"/>
+      <ellipse cx="79" cy="76" rx="41" ry="20"/>
     </clipPath>
   </defs>
 
-  <!-- ===== 5 BALLOONS ===== -->
-  <!-- Strings from balloon knots down to oven chimney cap -->
-  <line x1="40" y1="35" x2="67" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
-  <line x1="62" y1="29" x2="72" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
-  <line x1="82" y1="27" x2="79" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
-  <line x1="100" y1="28" x2="86" y2="57" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
-  <line x1="120" y1="34" x2="95" y2="58" stroke="#9a8870" stroke-width="1.2" opacity="0.85"/>
+  <!-- ===== BALLOONS: 5 ROWS (1,3,5,3,2) ===== -->
+  <g transform="translate(79 36) scale(2) translate(-79 -36)">
+  <!-- Strings toward chimney cap -->
+  <line x1="79" y1="21" x2="79" y2="57" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="64" y1="29" x2="74" y2="57" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="79" y1="29" x2="79" y2="57" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="94" y1="29" x2="84" y2="57" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="53" y1="37" x2="70" y2="58" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="66" y1="37" x2="74" y2="58" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="79" y1="37" x2="79" y2="58" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="92" y1="37" x2="84" y2="58" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="105" y1="37" x2="88" y2="58" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="64" y1="45" x2="74" y2="59" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="79" y1="45" x2="79" y2="59" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="94" y1="45" x2="84" y2="59" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="72" y1="53" x2="77" y2="60" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
+  <line x1="86" y1="53" x2="81" y2="60" stroke="#9a8870" stroke-width="1.1" opacity="0.85"/>
 
-  <!-- Balloon A — Red -->
-  <circle cx="40" cy="22" r="13" fill="#e03030"/>
-  <ellipse cx="35" cy="14" rx="5" ry="3.5" fill="#ff9090" opacity="0.6"/>
-  <ellipse cx="40" cy="35" rx="3" ry="1.5" fill="#a82020"/>
+  <!-- Row 1 (1) -->
+  <circle cx="79" cy="12" r="9" fill="#f5d020"/>
+  <ellipse cx="75" cy="8" rx="3.5" ry="2.2" fill="#ffffa0" opacity="0.7"/>
 
-  <!-- Balloon B — Yellow -->
-  <circle cx="62" cy="15" r="14" fill="#f5d020"/>
-  <ellipse cx="56" cy="8" rx="5.5" ry="3.5" fill="#ffff80" opacity="0.65"/>
-  <ellipse cx="62" cy="29" rx="3.5" ry="1.8" fill="#b09000"/>
+  <!-- Row 2 (3) -->
+  <circle cx="64" cy="22" r="8" fill="#e03030"/>
+  <circle cx="79" cy="22" r="8" fill="#28c040"/>
+  <circle cx="94" cy="22" r="8" fill="#3468d8"/>
 
-  <!-- Balloon C — Green -->
-  <circle cx="82" cy="14" r="13" fill="#28c040"/>
-  <ellipse cx="76" cy="7" rx="5" ry="3" fill="#80ff90" opacity="0.6"/>
-  <ellipse cx="82" cy="27" rx="3" ry="1.5" fill="#108020"/>
+  <!-- Row 3 (5) -->
+  <circle cx="53" cy="31" r="7.5" fill="#9030c0"/>
+  <circle cx="66" cy="31" r="7.5" fill="#f28c28"/>
+  <circle cx="79" cy="31" r="7.5" fill="#f5d020"/>
+  <circle cx="92" cy="31" r="7.5" fill="#20b0b8"/>
+  <circle cx="105" cy="31" r="7.5" fill="#e03030"/>
 
-  <!-- Balloon D — Blue -->
-  <circle cx="100" cy="15" r="13" fill="#3468d8"/>
-  <ellipse cx="94" cy="8" rx="5" ry="3" fill="#88bfff" opacity="0.6"/>
-  <ellipse cx="100" cy="28" rx="3" ry="1.5" fill="#1040a0"/>
+  <!-- Row 4 (3) -->
+  <circle cx="64" cy="40" r="7" fill="#3468d8"/>
+  <circle cx="79" cy="40" r="7" fill="#9030c0"/>
+  <circle cx="94" cy="40" r="7" fill="#28c040"/>
 
-  <!-- Balloon E — Purple -->
-  <circle cx="120" cy="22" r="12" fill="#9030c0"/>
-  <ellipse cx="114" cy="15" rx="4.5" ry="3" fill="#d080ff" opacity="0.6"/>
-  <ellipse cx="120" cy="34" rx="3" ry="1.5" fill="#601080"/>
-
-  <!-- ===== OVEN CHIMNEY ===== -->
-  <rect x="71" y="57" width="16" height="21" fill="#8a5550" rx="1"/>
-  <rect x="67" y="54" width="24" height="7" fill="#7a4540" rx="2"/>
-
-  <!-- ===== OVEN DOME (red, round top) ===== -->
-  <ellipse cx="79" cy="77" rx="33" ry="24" fill="#cc2000"/>
-  <!-- Brick lines on dome (clipped to dome shape) -->
-  <g clip-path="url(#domeClip)">
-    <line x1="46" y1="68" x2="112" y2="68" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
-    <line x1="46" y1="77" x2="112" y2="77" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
-    <line x1="62" y1="56" x2="62" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
-    <line x1="79" y1="53" x2="79" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
-    <line x1="96" y1="56" x2="96" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
-    <line x1="54" y1="68" x2="54" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
-    <line x1="71" y1="68" x2="71" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
-    <line x1="88" y1="68" x2="88" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
-    <line x1="105" y1="68" x2="105" y2="78" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+  <!-- Row 5 (2) -->
+  <circle cx="72" cy="48" r="6.5" fill="#e03030"/>
+  <circle cx="86" cy="48" r="6.5" fill="#f5d020"/>
   </g>
 
-  <!-- ===== OVEN BODY (red bricks) ===== -->
-  <rect x="46" y="77" width="66" height="47" fill="#cc2000"/>
+  <!-- ===== OVEN CHIMNEY ===== -->
+  <rect x="71" y="58" width="16" height="16" fill="#8a5550" rx="1"/>
+  <rect x="67" y="55" width="24" height="6" fill="#7a4540" rx="2"/>
+
+  <!-- ===== OVEN DOME (shorter + wider) ===== -->
+  <ellipse cx="79" cy="76" rx="41" ry="20" fill="#cc2000"/>
+  <!-- Brick lines on dome (clipped to dome shape) -->
+  <g clip-path="url(#domeClip)">
+    <line x1="38" y1="68" x2="120" y2="68" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    <line x1="38" y1="76" x2="120" y2="76" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    <line x1="58" y1="56" x2="58" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="79" y1="54" x2="79" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="100" y1="56" x2="100" y2="69" stroke="#ffffff" stroke-width="1" opacity="0.45"/>
+    <line x1="48" y1="68" x2="48" y2="77" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="69" y1="68" x2="69" y2="77" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="90" y1="68" x2="90" y2="77" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <line x1="111" y1="68" x2="111" y2="77" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+  </g>
+
+  <!-- ===== OVEN BODY (shorter + wider) ===== -->
+  <rect x="38" y="76" width="82" height="38" fill="#cc2000"/>
 
   <!-- Horizontal brick seams on body -->
-  <line x1="46" y1="87" x2="112" y2="87" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
-  <line x1="46" y1="97" x2="112" y2="97" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
-  <line x1="46" y1="107" x2="112" y2="107" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
-  <line x1="46" y1="117" x2="112" y2="117" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="38" y1="85" x2="120" y2="85" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="38" y1="94" x2="120" y2="94" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="38" y1="103" x2="120" y2="103" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="38" y1="112" x2="120" y2="112" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
 
   <!-- Vertical brick seams (staggered rows) -->
-  <!-- row 77-87 -->
-  <line x1="62" y1="77" x2="62" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="79" y1="77" x2="79" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="96" y1="77" x2="96" y2="87" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <!-- row 87-97 -->
-  <line x1="54" y1="87" x2="54" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="71" y1="87" x2="71" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="88" y1="87" x2="88" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="105" y1="87" x2="105" y2="97" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <!-- row 97-107 -->
-  <line x1="62" y1="97" x2="62" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="79" y1="97" x2="79" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="96" y1="97" x2="96" y2="107" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <!-- row 107-117 -->
-  <line x1="54" y1="107" x2="54" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="71" y1="107" x2="71" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="88" y1="107" x2="88" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="105" y1="107" x2="105" y2="117" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <!-- row 117-124 -->
-  <line x1="62" y1="117" x2="62" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="79" y1="117" x2="79" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
-  <line x1="96" y1="117" x2="96" y2="124" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 76-85 -->
+  <line x1="58" y1="76" x2="58" y2="85" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="76" x2="79" y2="85" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="100" y1="76" x2="100" y2="85" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 85-94 -->
+  <line x1="48" y1="85" x2="48" y2="94" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="69" y1="85" x2="69" y2="94" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="90" y1="85" x2="90" y2="94" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="111" y1="85" x2="111" y2="94" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 94-103 -->
+  <line x1="58" y1="94" x2="58" y2="103" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="94" x2="79" y2="103" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="100" y1="94" x2="100" y2="103" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 103-112 -->
+  <line x1="48" y1="103" x2="48" y2="112" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="69" y1="103" x2="69" y2="112" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="90" y1="103" x2="90" y2="112" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="111" y1="103" x2="111" y2="112" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <!-- row 112-114 -->
+  <line x1="58" y1="112" x2="58" y2="114" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="79" y1="112" x2="79" y2="114" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
+  <line x1="100" y1="112" x2="100" y2="114" stroke="#ffffff" stroke-width="1" opacity="0.55"/>
 
   <!-- ===== OVEN DOOR ARCH FRAME ===== -->
-  <ellipse cx="79" cy="88" rx="22" ry="15" fill="#dd2800"/>
-  <rect x="57" y="88" width="44" height="34" fill="#dd2800"/>
+  <ellipse cx="79" cy="86" rx="25" ry="12" fill="#dd2800"/>
+  <rect x="54" y="86" width="50" height="26" fill="#dd2800"/>
 
   <!-- ===== OVEN DOOR OPENING (dark cavity) ===== -->
-  <ellipse cx="79" cy="90" rx="17" ry="11" fill="#1a0800"/>
-  <rect x="62" y="90" width="34" height="31" fill="#1a0800"/>
+  <ellipse cx="79" cy="88" rx="20" ry="9" fill="#1a0800"/>
+  <rect x="59" y="88" width="40" height="23" fill="#1a0800"/>
 
   <!-- Static flame (Phaser animated overlay will cover this in-game) -->
-  <ellipse cx="79" cy="115" rx="13" ry="5" fill="#ff4400" opacity="0.9"/>
-  <ellipse cx="79" cy="107" rx="9" ry="8" fill="#ffaa00" opacity="0.9"/>
-  <polygon points="74,97 79,87 84,97" fill="#fff060" opacity="0.95"/>
+  <ellipse cx="79" cy="108" rx="14" ry="4" fill="#ff4400" opacity="0.9"/>
+  <ellipse cx="79" cy="103" rx="10" ry="6" fill="#ffaa00" opacity="0.9"/>
+  <polygon points="74,98 79,90 84,98" fill="#fff060" opacity="0.95"/>
 
   <!-- ===== OVEN BASE PLATE & LEGS ===== -->
-  <rect x="42" y="123" width="74" height="7" fill="#882000" rx="2"/>
-  <rect x="52" y="128" width="12" height="5" fill="#661800"/>
-  <rect x="90" y="128" width="12" height="5" fill="#661800"/>
+  <rect x="34" y="114" width="90" height="7" fill="#882000" rx="2"/>
+  <rect x="48" y="119" width="12" height="5" fill="#661800"/>
+  <rect x="98" y="119" width="12" height="5" fill="#661800"/>
 
   <!-- ===== CHEF MARIO (right side, left arm grips oven) ===== -->
 
@@ -124,9 +135,9 @@
   <ellipse cx="146" cy="99" rx="4" ry="5" fill="#e8a870"/>
   <ellipse cx="170" cy="99" rx="4" ry="5" fill="#e8a870"/>
 
-  <!-- Thick Mario eyebrows -->
-  <rect x="148" y="89" width="9" height="4" fill="#1a0e08" rx="2"/>
-  <rect x="163" y="89" width="9" height="4" fill="#1a0e08" rx="2"/>
+  <!-- Thinner eyebrows -->
+  <rect x="148" y="90" width="9" height="2.2" fill="#1a0e08" rx="1.1"/>
+  <rect x="163" y="90" width="9" height="2.2" fill="#1a0e08" rx="1.1"/>
 
   <!-- Eyes -->
   <circle cx="153" cy="95" r="2.8" fill="#2a1a08"/>
@@ -137,22 +148,25 @@
   <!-- Nose -->
   <ellipse cx="158" cy="100" rx="4" ry="3.5" fill="#e08060"/>
 
-  <!-- Big bushy mustache -->
-  <ellipse cx="152" cy="107" rx="9" ry="5.5" fill="#1a0e08"/>
-  <ellipse cx="164" cy="107" rx="9" ry="5.5" fill="#1a0e08"/>
-  <ellipse cx="158" cy="104" rx="3.5" ry="2.8" fill="#f5c49e"/>
-  <ellipse cx="144" cy="104" rx="4.5" ry="3" fill="#1a0e08" transform="rotate(-25 144 104)"/>
-  <ellipse cx="172" cy="104" rx="4.5" ry="3" fill="#1a0e08" transform="rotate(25 172 104)"/>
+  <!-- Raised, thinner, wider mustache (chin visible underneath) -->
+  <ellipse cx="151" cy="104" rx="10.5" ry="3.2" fill="#1a0e08"/>
+  <ellipse cx="165" cy="104" rx="10.5" ry="3.2" fill="#1a0e08"/>
+  <ellipse cx="158" cy="102" rx="4.2" ry="2.2" fill="#f5c49e"/>
+  <ellipse cx="141.5" cy="102" rx="4.8" ry="2.4" fill="#1a0e08" transform="rotate(-20 141.5 102)"/>
+  <ellipse cx="174.5" cy="102" rx="4.8" ry="2.4" fill="#1a0e08" transform="rotate(20 174.5 102)"/>
 
-  <!-- Body (white jacket, chubby) -->
-  <ellipse cx="158" cy="123" rx="16" ry="14" fill="#f6f6f6"/>
+  <!-- Chin under mustache -->
+  <ellipse cx="158" cy="111" rx="6.2" ry="3.8" fill="#e8a870" opacity="0.9"/>
+
+  <!-- Body (bigger, rounder stomach) -->
+  <ellipse cx="158" cy="124" rx="20" ry="17" fill="#f6f6f6"/>
   <!-- Red belly panel -->
-  <rect x="151" y="114" width="14" height="16" fill="#cc2828" opacity="0.5" rx="2"/>
+  <rect x="150" y="113" width="16" height="19" fill="#cc2828" opacity="0.5" rx="3"/>
   <!-- Buttons -->
   <circle cx="154" cy="117" r="1.6" fill="#d0d0d0"/>
   <circle cx="162" cy="117" r="1.6" fill="#d0d0d0"/>
-  <circle cx="154" cy="124" r="1.6" fill="#d0d0d0"/>
-  <circle cx="162" cy="124" r="1.6" fill="#d0d0d0"/>
+  <circle cx="154" cy="125" r="1.6" fill="#d0d0d0"/>
+  <circle cx="162" cy="125" r="1.6" fill="#d0d0d0"/>
 
   <!-- LEFT ARM reaching to grip oven right edge -->
   <!-- Upper arm (sleeve, white) -->
@@ -160,7 +174,7 @@
   <!-- Forearm continuing toward oven -->
   <ellipse cx="130" cy="112" rx="6" ry="9" fill="#f6f6f6" transform="rotate(-25 130 112)"/>
   <!-- Hand gripping oven right wall -->
-  <circle cx="116" cy="104" r="6" fill="#f5c49e"/>
+  <circle cx="122" cy="104" r="6" fill="#f5c49e"/>
   <!-- Thumb -->
   <ellipse cx="111" cy="100" rx="3.2" ry="2.2" fill="#e8a870" transform="rotate(-30 111 100)"/>
 
