@@ -203,7 +203,7 @@ export function updateZombieLightEffect(scene, delta) {
 export function updateZombieGroundingAndAccessories(scene) {
   const zombies = scene.zombieGroup.getChildren();
   const dayMode = scene.currentThemeKey === 'day';
-  const groundTop = scene.getGroundSurfaceY();
+    const groundTop = scene.getGroundSurfaceY();
 
   for (let i = 0; i < zombies.length; i += 1) {
     const zombie = zombies[i];
@@ -216,8 +216,8 @@ export function updateZombieGroundingAndAccessories(scene) {
     }
 
     // Keep enemy grounding body-driven to avoid sprite/body divergence.
-    zombie.body.y = groundTop - zombie.body.height;
-    zombie.body.velocity.y = 0;
+      // Keep enemies planted using the same sync path used elsewhere.
+      scene.syncEnemyBody(zombie);
 
     if (dayMode && zombie.enemyType === 'vampire') {
       if (!zombie.umbrella || !zombie.umbrella.active) {

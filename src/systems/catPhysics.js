@@ -13,7 +13,11 @@ export function syncKittenBodyToFeet(scene) {
   }
 
   const body = scene.kitten.body;
-  const hitbox = computeBodyFromDisplay(scene.kitten.displayWidth, scene.kitten.displayHeight, {
+  // Use SOURCE (unscaled) frame dimensions — Phaser's setSize / setOffset
+  // work in source pixels and are multiplied by the sprite's scale internally.
+  // Passing displayWidth/Height (already scaled) caused double-scaling that
+  // made the body grow quadratically, pushing the sprite above the ground.
+  const hitbox = computeBodyFromDisplay(scene.kitten.width, scene.kitten.height, {
     widthRatio: 0.5,
     heightRatio: 0.5,
     minWidth: 14,
@@ -22,21 +26,14 @@ export function syncKittenBodyToFeet(scene) {
   });
   body.setSize(hitbox.bodyW, hitbox.bodyH, false);
   body.setOffset(hitbox.offsetX, hitbox.offsetY);
-
-  const groundTop = getGroundSurfaceY(scene);
-  const nearGround = ((body.blocked.down || body.touching.down) || body.bottom >= groundTop - 2) && body.velocity.y >= 0;
-  if (nearGround) {
-    scene.kitten.y = groundTop;
-    body.y = groundTop - body.height;
-    body.velocity.y = 0;
-  }
 }
 
 export function syncEnemyBody(scene, enemy) {
   if (!enemy || !enemy.body) {
     return;
   }
-  const hitbox = computeBodyFromDisplay(enemy.displayWidth, enemy.displayHeight, {
+  // Use SOURCE (unscaled) frame dimensions — same fix as syncKittenBodyToFeet.
+  const hitbox = computeBodyFromDisplay(enemy.width, enemy.height, {
     widthRatio: 0.5,
     heightRatio: 0.46,
     minWidth: 14,
@@ -45,11 +42,6 @@ export function syncEnemyBody(scene, enemy) {
   });
   enemy.body.setSize(hitbox.bodyW, hitbox.bodyH, false);
   enemy.body.setOffset(hitbox.offsetX, hitbox.offsetY);
-  const groundTop = getGroundSurfaceY(scene);
-  if (enemy.body.bottom >= groundTop - 24 || enemy.body.velocity.y >= 0) {
-    enemy.body.y = groundTop - enemy.body.height;
-    enemy.body.velocity.y = 0;
-  }
 }
 
 export function updateKittenMovement(scene, delta) {
