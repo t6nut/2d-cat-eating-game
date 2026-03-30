@@ -1,5 +1,6 @@
 import { TEXT_STYLE } from '../utils.js';
 import { clampCatSize } from '../systems/catGrowth.js';
+import { createBackground as createBg, applyMap } from '../systems/mapRenderer.js';
 
 const W = 1280;
 const H = 720;
@@ -58,11 +59,17 @@ export class TitleScene extends Phaser.Scene {
     this.menuMoon = null;
     this.menuJetpack = null;
     this.menuJetpackFlames = null;
-    this.menuBackdropBuildings = [];
-    this.menuCityDecor = [];
-    this.menuDesertDecor = [];
-    this.menuBeachDecor = [];
-    this.menuMoonDecor = [];
+    this.backgroundElements = [];
+    this.mapSettings = {
+      city: { label: 'City', skyColor: 0x8cc7ff, groundColor: 0x5f6775 },
+      desert: { label: 'Desert', skyColor: 0xfecf86, groundColor: 0xd8b06a },
+      beach: { label: 'Beach', skyColor: 0x8de0ff, groundColor: 0xe3d39b },
+      moon: { label: 'Moon', skyColor: 0x0c1330, groundColor: 0x8f97ab },
+    };
+    this.currentMapKey = 'city';
+    this.currentThemeKey = 'day';
+    this.menuStars = [];
+    this.menuClouds = [];
   }
 
   preload() {
@@ -212,27 +219,10 @@ export class TitleScene extends Phaser.Scene {
   }
 
   createMenuBackdrop() {
-    this.menuSky = this.add.rectangle(W / 2, H / 2, W, H, 0x99e8ff).setDepth(0);
-    this.menuGround = this.add.rectangle(W / 2, H - 108, W, 216, 0x6d7686).setDepth(1);
-
-    this.rebuildMenuCityBackdrop(false);
-
-    const duneA = this.add.ellipse(230, H - 80, 420, 110, 0xe7bf7e, 0.55).setDepth(2).setVisible(false);
-    const duneB = this.add.ellipse(640, H - 65, 560, 130, 0xd6aa68, 0.5).setDepth(2).setVisible(false);
-    const desertSun = this.add.circle(830, 86, 34, 0xfff1a0, 0.9).setDepth(2).setVisible(false);
-    this.menuDesertDecor.push(duneA, duneB, desertSun);
-
-    const sea = this.add.rectangle(W / 2, H * 0.58, W, H * 0.64, 0x4fc4dc, 0.6).setDepth(2).setVisible(false);
-    const waveA = this.add.ellipse(260, H * 0.41, 420, 34, 0xbef6ff, 0.45).setDepth(2).setVisible(false);
-    const waveB = this.add.ellipse(700, H * 0.44, 520, 38, 0xbef6ff, 0.4).setDepth(2).setVisible(false);
-    const waveC = this.add.ellipse(1080, H * 0.47, 360, 30, 0xbef6ff, 0.36).setDepth(2).setVisible(false);
-    this.menuBeachDecor.push(sea, waveA, waveB, waveC);
-
-    const moonSurface = this.add.ellipse(W / 2, H + 120, 1600, 520, 0x8f97ab, 0.72).setDepth(2).setVisible(false);
-    const moonRingA = this.add.ellipse(W / 2, H + 125, 1280, 420, 0xdde3ef, 0.12).setDepth(2).setVisible(false);
-    const moonRingB = this.add.ellipse(W / 2, H + 135, 1140, 360, 0xc7cdd8, 0.1).setDepth(2).setVisible(false);
-    const earth = this.add.circle(132, 100, 24, 0x5ca7f3, 0.9).setDepth(3).setVisible(false);
-    this.menuMoonDecor.push(moonSurface, moonRingA, moonRingB, earth);
+    createBg(this, W, H);
+    // Rename to match what the rest of TitleScene expects
+    this.menuSky = this.bgSky;
+    this.menuGround = this.bgGround;
 
     for (let i = 0; i < 16; i += 1) {
       const cloud = this.add.ellipse(60 + i * 84, 70 + (i % 2) * 22, 90, 32, 0xe8f7ff, 0.58).setDepth(2);
@@ -259,77 +249,25 @@ export class TitleScene extends Phaser.Scene {
     this.menuJetpackFlames = this.add.graphics().setDepth(6);
   }
 
-  rebuildMenuCityBackdrop(isNight) {
-    for (let i = 0; i < this.menuCityDecor.length; i += 1) {
-      this.menuCityDecor[i].destroy();
-    }
-    this.menuCityDecor = [];
-    this.menuBackdropBuildings = [];
-
-    const buildingColor = isNight ? 0x273348 : 0x7f8ea4;
-    const windowColor = isNight ? 0x1a2236 : 0x5a687d;
-    const lightColor = isNight ? 0xffeb3b : 0xfffacd;
-
-    for (let i = 0; i < 11; i += 1) {
-      const x = 54 + i * 122;
-      const h = 90 + (i % 4) * 26;
-      const building = this.add.rectangle(x, H - 170 - h * 0.5, 78, h, buildingColor, 0.95).setDepth(2);
-      this.menuCityDecor.push(building);
-      this.menuBackdropBuildings.push(building);
-
-      const floorCount = Math.max(3, Math.floor(h / 20));
-      for (let f = 0; f < floorCount; f += 1) {
-        for (let w = 0; w < 2; w += 1) {
-          const windowY = H - 170 - h * 0.5 + (f - floorCount * 0.5) * 22;
-          const windowX = x - 16 + w * 32;
-          const windowGlass = this.add.rectangle(windowX, windowY, 10, 10, windowColor, 0.85).setDepth(2);
-          this.menuCityDecor.push(windowGlass);
-
-          if (isNight && ((i + f + w) % 3 !== 0)) {
-            const light = this.add.rectangle(windowX, windowY, 8, 8, lightColor, 0.65).setDepth(2);
-            this.menuCityDecor.push(light);
-          }
-        }
-      }
-
-      if (i % 3 === 0) {
-        const roofY = H - 170 - h - 5;
-        const roofLeft = this.add.triangle(x - 20, roofY + 6, 0, 10, 20, 0, 40, 10, isNight ? 0x1a1625 : 0x5a3a25, 0.9).setDepth(2);
-        const roofRight = this.add.triangle(x + 20, roofY + 6, 0, 10, 20, 0, 40, 10, isNight ? 0x1a1625 : 0x5a3a25, 0.9).setDepth(2);
-        this.menuCityDecor.push(roofLeft, roofRight);
-      }
-    }
-
-    const skylineBaseY = Math.floor(H * 0.75);
-    const asphalt = this.add.rectangle(W / 2, skylineBaseY + 14, W, 44, 0x262a32, 0.9).setDepth(2);
-    const laneStripe = this.add.rectangle(W / 2, skylineBaseY + 14, W, 3, 0xc9c9bf, 0.55).setDepth(2);
-    this.menuCityDecor.push(asphalt, laneStripe);
-
-    for (let i = 0; i < 7; i += 1) {
-      const tx = 90 + i * 170;
-      const trunk = this.add.rectangle(tx, skylineBaseY - 8, 8, 18, 0x5b3a25, 0.95).setDepth(3);
-      const leaves = this.add.circle(tx, skylineBaseY - 22, 13, 0x4f9650, 0.95).setDepth(3);
-      this.menuCityDecor.push(trunk, leaves);
-    }
-  }
-
   updateMenuBackdrop() {
     const map = this.selectedMap || 'city';
     const theme = this.selectedTheme || 'day';
     const isMoon = map === 'moon';
     const isNight = theme === 'night' || isMoon;
 
-    const colors = {
-      city: { daySky: 0x95d5ff, dayGround: 0x6d7686, nightSky: 0x101a34, nightGround: 0x3a4558 },
-      desert: { daySky: 0xfecf86, dayGround: 0xd8b06a, nightSky: 0x2d2033, nightGround: 0x6f5a45 },
-      beach: { daySky: 0x8de0ff, dayGround: 0xe3d39b, nightSky: 0x10203f, nightGround: 0x7b6b4d },
-      moon: { daySky: 0x0c1330, dayGround: 0x8f97ab, nightSky: 0x0c1330, nightGround: 0x8f97ab },
-    };
-    const palette = colors[map] || colors.city;
+    // Set current state so applyMap can reference it (e.g. city night)
+    this.currentThemeKey = isNight ? 'night' : 'day';
 
-    this.menuSky.setFillStyle(isNight ? palette.nightSky : palette.daySky, 1);
-    this.menuGround.setFillStyle(isNight ? palette.nightGround : palette.dayGround, isMoon ? 0.42 : 0.96);
+    // Clear previous map elements
+    for (let i = 0; i < this.backgroundElements.length; i += 1) {
+      this.backgroundElements[i].destroy();
+    }
+    this.backgroundElements = [];
 
+    // Use the SAME applyMap as the game — visually identical
+    applyMap(this, map, W, H);
+
+    // Overlay: clouds / stars / sun / moon
     for (let i = 0; i < this.menuClouds.length; i += 1) {
       this.menuClouds[i].setVisible(!isNight && !isMoon);
     }
@@ -338,25 +276,6 @@ export class TitleScene extends Phaser.Scene {
     }
     this.menuSun.setVisible(!isNight && !isMoon);
     this.menuMoon.setVisible(isNight);
-
-    const showCity = map === 'city';
-    const showDesert = map === 'desert';
-    const showBeach = map === 'beach';
-    const showMoon = map === 'moon';
-
-    this.rebuildMenuCityBackdrop(isNight);
-    for (let i = 0; i < this.menuCityDecor.length; i += 1) {
-      this.menuCityDecor[i].setVisible(showCity);
-    }
-    for (let i = 0; i < this.menuDesertDecor.length; i += 1) {
-      this.menuDesertDecor[i].setVisible(showDesert);
-    }
-    for (let i = 0; i < this.menuBeachDecor.length; i += 1) {
-      this.menuBeachDecor[i].setVisible(showBeach);
-    }
-    for (let i = 0; i < this.menuMoonDecor.length; i += 1) {
-      this.menuMoonDecor[i].setVisible(showMoon);
-    }
 
     if (this.heli) {
       this.heli.setTexture(isMoon ? 'ufoSprite' : 'chefHeli');

@@ -1,7 +1,9 @@
 export function applyTheme(scene, themeKey, worldWidth) {
   const theme = scene.themeSettings[themeKey] || scene.themeSettings.day;
   scene.currentThemeKey = themeKey;
-  scene.bgGround.setAlpha(1);
+  if (scene.currentMapKey !== 'moon') {
+    scene.bgGround.setAlpha(1);
+  }
   scene.applyMap(scene.currentMapKey);
 
   if (themeKey === 'night') {

@@ -107,10 +107,15 @@ export function updateFlashlightPosition(scene) {
   const dayLaser = scene.currentThemeKey === 'day' && scene.flashlightOn && scene.flashlightBattery > 0;
   const lightEnabled = nightBeam || dayLaser;
   if (!lightEnabled) {
+    scene.flashlightCone.setVisible(false);
+    scene.flashlightHandle.setVisible(false);
     scene.flashlightCone.clear();
     scene.flashlightHandle.clear();
     return;
   }
+
+  scene.flashlightCone.setVisible(true);
+  scene.flashlightHandle.setVisible(true);
 
   const dir = scene.kitten.body.velocity.x < -20 ? -1 : scene.kitten.body.velocity.x > 20 ? 1 : scene.lastMoveDir;
   const handX = scene.kitten.x + dir * 10;

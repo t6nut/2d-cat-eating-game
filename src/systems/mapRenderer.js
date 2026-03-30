@@ -93,20 +93,198 @@ export function applyMap(scene, mapKey, worldWidth, worldHeight) {
       });
     }
   } else if (mapKey === 'desert') {
-    const dune1 = scene.add.ellipse(230, worldHeight - 80, 420, 110, 0xe7bf7e, 0.55).setDepth(2);
-    const dune2 = scene.add.ellipse(640, worldHeight - 65, 560, 130, 0xd6aa68, 0.5).setDepth(2);
-    const sun = scene.add.circle(830, 86, 34, 0xfff1a0, 0.9).setDepth(2);
-    scene.backgroundElements.push(dune1, dune2, sun);
+    const sun = scene.add.circle(930, 72, 38, 0xfff1a0, 0.92).setDepth(2);
+    // Sun shimmer halo
+    const sunHalo = scene.add.circle(930, 72, 56, 0xffe980, 0.18).setDepth(2);
+    scene.backgroundElements.push(sunHalo, sun);
+
+    // Wavy sand hills using polygon graphics
+    const sandHills = scene.add.graphics().setDepth(2);
+    sandHills.fillStyle(0xc8962a, 0.45);
+    sandHills.beginPath();
+    sandHills.moveTo(0, worldHeight - 40);
+    const hillPoints = [0,0, 80,-22, 160,-8, 240,-38, 330,-18, 420,-44, 510,-14, 600,-36, 690,-12, 780,-42, 870,-20, 960,-50, 1050,-16, 1140,-40, 1230,-18, worldWidth,0];
+    for (let hi = 0; hi < hillPoints.length; hi += 2) {
+      sandHills.lineTo(hillPoints[hi], worldHeight - 60 + hillPoints[hi + 1]);
+    }
+    sandHills.lineTo(worldWidth, worldHeight);
+    sandHills.lineTo(0, worldHeight);
+    sandHills.closePath();
+    sandHills.fillPath();
+
+    const sandHills2 = scene.add.graphics().setDepth(2);
+    sandHills2.fillStyle(0xe8ae50, 0.35);
+    sandHills2.beginPath();
+    sandHills2.moveTo(0, worldHeight - 20);
+    const hill2Points = [0,0, 120,-28, 240,-12, 360,-32, 480,-8, 600,-28, 720,-6, 840,-24, 960,-10, 1080,-30, 1200,-12, worldWidth,0];
+    for (let hi = 0; hi < hill2Points.length; hi += 2) {
+      sandHills2.lineTo(hill2Points[hi], worldHeight - 40 + hill2Points[hi + 1]);
+    }
+    sandHills2.lineTo(worldWidth, worldHeight);
+    sandHills2.lineTo(0, worldHeight);
+    sandHills2.closePath();
+    sandHills2.fillPath();
+    scene.backgroundElements.push(sandHills, sandHills2);
+
+    // Background dunes
+    const dune1 = scene.add.ellipse(180, worldHeight - 92, 380, 100, 0xd4994a, 0.4).setDepth(2);
+    const dune2 = scene.add.ellipse(640, worldHeight - 78, 520, 120, 0xc98c3a, 0.38).setDepth(2);
+    const dune3 = scene.add.ellipse(1100, worldHeight - 86, 340, 90, 0xd4994a, 0.36).setDepth(2);
+    scene.backgroundElements.push(dune1, dune2, dune3);
+
+    // Pyramids (3 sizes, staggered)
+    const pyramidData = [
+      { x: 760, baseW: 220, h: 160 },
+      { x: 560, baseW: 160, h: 110 },
+      { x: 940, baseW: 130, h: 90 },
+    ];
+    for (const pd of pyramidData) {
+      const baseY = worldHeight - 138;
+      const pyr = scene.add.triangle(
+        pd.x, baseY - pd.h,
+        -(pd.baseW / 2), pd.h,
+        0, 0,
+        pd.baseW / 2, pd.h,
+        0xd4a852, 0.92,
+      ).setDepth(3);
+      // Shadow face
+      const pyrShade = scene.add.triangle(
+        pd.x, baseY - pd.h,
+        0, 0,
+        pd.baseW / 2, pd.h,
+        pd.baseW / 2, pd.h,
+        0xa67c30, 0.55,
+      ).setDepth(3);
+      // Entrance block
+      const door = scene.add.rectangle(pd.x + 4, baseY - 14, pd.baseW * 0.12, pd.h * 0.12, 0x2a1a0a, 0.75).setDepth(3);
+      scene.backgroundElements.push(pyr, pyrShade, door);
+    }
+
+    // Sphinx — at x=330, sitting on ground
+    const sphinxX = 330;
+    const sphinxBaseY = worldHeight - 138;
+    // Body (crouching lion form)
+    const sphinxBody = scene.add.rectangle(sphinxX + 10, sphinxBaseY - 20, 80, 34, 0xc8963c, 0.9).setDepth(3);
+    const sphinxFront = scene.add.rectangle(sphinxX - 28, sphinxBaseY - 16, 22, 28, 0xc8963c, 0.9).setDepth(3);
+    // Head
+    const sphinxHead = scene.add.rectangle(sphinxX - 38, sphinxBaseY - 46, 26, 26, 0xd4a852, 0.92).setDepth(3);
+    // Headdress (nemes)
+    const headdress = scene.add.rectangle(sphinxX - 38, sphinxBaseY - 60, 30, 14, 0xbf8c28, 0.9).setDepth(3);
+    const headdressSide = scene.add.rectangle(sphinxX - 48, sphinxBaseY - 52, 10, 20, 0xbf8c28, 0.85).setDepth(3);
+    // Face details
+    const sphinxEye = scene.add.rectangle(sphinxX - 30, sphinxBaseY - 48, 4, 3, 0x3a2800, 0.9).setDepth(3);
+    const sphinxNose = scene.add.rectangle(sphinxX - 32, sphinxBaseY - 43, 3, 3, 0xa07428, 0.7).setDepth(3);
+    scene.backgroundElements.push(sphinxBody, sphinxFront, sphinxHead, headdress, headdressSide, sphinxEye, sphinxNose);
+
+    // Cactus
+    for (let cx = 0; cx < 2; cx += 1) {
+      const cactusX = 100 + cx * 1080;
+      const cactusY = worldHeight - 148;
+      const stem = scene.add.rectangle(cactusX, cactusY - 20, 10, 52, 0x5aaa54, 0.85).setDepth(3);
+      const armL = scene.add.rectangle(cactusX - 14, cactusY - 28, 18, 8, 0x5aaa54, 0.8).setDepth(3);
+      const armLTop = scene.add.rectangle(cactusX - 20, cactusY - 34, 8, 14, 0x5aaa54, 0.8).setDepth(3);
+      const armR = scene.add.rectangle(cactusX + 14, cactusY - 22, 18, 8, 0x5aaa54, 0.8).setDepth(3);
+      const armRTop = scene.add.rectangle(cactusX + 20, cactusY - 28, 8, 14, 0x5aaa54, 0.8).setDepth(3);
+      scene.backgroundElements.push(stem, armL, armLTop, armR, armRTop);
+    }
   } else if (mapKey === 'beach') {
     const sea = scene.add.rectangle(worldWidth / 2, worldHeight * 0.58, worldWidth, worldHeight * 0.64, 0x4fc4dc, 0.6).setDepth(2);
-    const wave1 = scene.add.ellipse(260, worldHeight * 0.41, 420, 34, 0xbef6ff, 0.45).setDepth(2);
-    const wave2 = scene.add.ellipse(700, worldHeight * 0.44, 520, 38, 0xbef6ff, 0.4).setDepth(2);
-    const wave3 = scene.add.ellipse(1080, worldHeight * 0.47, 360, 30, 0xbef6ff, 0.36).setDepth(2);
-    scene.backgroundElements.push(sea, wave1, wave2, wave3);
+    scene.backgroundElements.push(sea);
+
+    // Animated waves
+    for (let i = 0; i < 5; i += 1) {
+      const waveX = 140 + i * 260;
+      const waveY = worldHeight * 0.38 + i * 18;
+      const wave = scene.add.ellipse(waveX, waveY, 380 + i * 40, 28 + i * 4, 0xbef6ff, 0.45 - i * 0.04).setDepth(2);
+      scene.backgroundElements.push(wave);
+      scene.tweens.add({ targets: wave, x: waveX + 50, y: waveY + 6, duration: 2400 + i * 300, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
+
+    // Palm trees
+    for (let j = 0; j < 3; j += 1) {
+      const px = 120 + j * 460;
+      const trunk = scene.add.rectangle(px, worldHeight - 145, 8, 60, 0x8b6834, 0.9).setDepth(3);
+      const frondA = scene.add.ellipse(px - 18, worldHeight - 180, 44, 16, 0x3fac4d, 0.85).setDepth(3);
+      const frondB = scene.add.ellipse(px + 18, worldHeight - 178, 40, 14, 0x4fbc5a, 0.8).setDepth(3);
+      const frondC = scene.add.ellipse(px, worldHeight - 186, 34, 12, 0x57c863, 0.75).setDepth(3);
+      scene.backgroundElements.push(trunk, frondA, frondB, frondC);
+    }
+
+    // People sunbathing on the beach
+    const sunbathers = [
+      { x: 200, color: 0xf5c49c },
+      { x: 480, color: 0xd4916c },
+      { x: 850, color: 0xf0b888 },
+      { x: 1100, color: 0xc78060 },
+    ];
+    for (const sb of sunbathers) {
+      const towelColor = [0xe84444, 0x4488ee, 0xf0c547, 0x44bb66][sunbathers.indexOf(sb) % 4];
+      const towel = scene.add.rectangle(sb.x, worldHeight - 115, 46, 10, towelColor, 0.7).setDepth(3);
+      const body = scene.add.ellipse(sb.x, worldHeight - 120, 28, 10, sb.color, 0.9).setDepth(3);
+      const head = scene.add.circle(sb.x - 14, worldHeight - 122, 5, sb.color, 0.95).setDepth(3);
+      scene.backgroundElements.push(towel, body, head);
+    }
+
+    // People swimming in the water with animated arms
+    const swimmerDefs = [
+      { x: 300, y: worldHeight * 0.46, color: 0xf5c49c, drift: 28 },
+      { x: 620, y: worldHeight * 0.50, color: 0xd4916c, drift: -22 },
+      { x: 940, y: worldHeight * 0.44, color: 0xf0b888, drift: 25 },
+    ];
+    for (const sw of swimmerDefs) {
+      const swimHead = scene.add.circle(sw.x, sw.y, 5, sw.color, 0.9).setDepth(3);
+      const swimBody = scene.add.ellipse(sw.x, sw.y + 7, 10, 8, sw.color, 0.75).setDepth(3);
+      // Left arm reaching forward
+      const armL = scene.add.ellipse(sw.x - 9, sw.y + 3, 14, 4, sw.color, 0.8).setDepth(3);
+      // Right arm
+      const armR = scene.add.ellipse(sw.x + 9, sw.y + 3, 14, 4, sw.color, 0.8).setDepth(3);
+      // Hands (small circles at ends of arms)
+      const handL = scene.add.circle(sw.x - 15, sw.y + 3, 3, sw.color, 0.85).setDepth(3);
+      const handR = scene.add.circle(sw.x + 15, sw.y + 3, 3, sw.color, 0.85).setDepth(3);
+      const group = [swimHead, swimBody, armL, armR, handL, handR];
+      scene.backgroundElements.push(...group);
+      // Bob up and down
+      scene.tweens.add({ targets: group, y: '-=5', duration: 900 + Phaser.Math.Between(0, 300), yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      // Swim sideways
+      const swimDist = sw.drift;
+      scene.tweens.add({ targets: group, x: `+=${swimDist}`, duration: 2800 + Phaser.Math.Between(0, 600), yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      // Alternate arm stroke — left arm goes forward when right goes back
+      scene.tweens.add({ targets: armL, y: '-=6', duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      scene.tweens.add({ targets: armR, y: '+=6', duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 300 });
+      scene.tweens.add({ targets: handL, y: '-=6', duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      scene.tweens.add({ targets: handR, y: '+=6', duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 300 });
+    }
+
+    // Surfer being chased by a shark
+    const surferStartX = worldWidth + 80;
+    const surferY = worldHeight * 0.42;
+    const surfBoard = scene.add.rectangle(surferStartX, surferY + 4, 30, 6, 0xf5f5dc, 0.9).setDepth(3);
+    const surferBody = scene.add.rectangle(surferStartX, surferY - 6, 8, 16, 0xf0b888, 0.9).setDepth(3);
+    const surferHead = scene.add.circle(surferStartX, surferY - 16, 5, 0xf0b888, 0.95).setDepth(3);
+    scene.backgroundElements.push(surfBoard, surferBody, surferHead);
+
+    const sharkX = surferStartX + 100;
+    const sharkBody = scene.add.triangle(sharkX, surferY + 2, 0, 8, 30, 0, 30, 16, 0x6a7b8d, 0.9).setDepth(3);
+    const sharkFin = scene.add.triangle(sharkX + 10, surferY - 8, 0, 12, 6, 0, 12, 12, 0x5a6b7d, 0.95).setDepth(3);
+    scene.backgroundElements.push(sharkBody, sharkFin);
+
+    // Animate surfer + shark looping across screen
+    const surferTargets = [surfBoard, surferBody, surferHead];
+    const sharkTargets = [sharkBody, sharkFin];
+    const loopSurfer = () => {
+      for (const t of surferTargets) { t.x = worldWidth + 80; }
+      for (const t of sharkTargets) { t.x = worldWidth + 180; }
+      scene.tweens.add({ targets: surferTargets, x: '-=' + (worldWidth + 200), duration: 8000, ease: 'Linear',
+        onUpdate: () => { surferBody.x = surfBoard.x; surferHead.x = surfBoard.x; sharkBody.x = surfBoard.x + 100; sharkFin.x = surfBoard.x + 110; },
+        onComplete: () => { scene.time.delayedCall(Phaser.Math.Between(2000, 5000), loopSurfer); },
+      });
+    };
+    loopSurfer();
   } else if (mapKey === 'moon') {
     scene.bgSky.setVisible(true);
     scene.bgSky.setFillStyle(0x0c1330, 1);
     scene.bgGround.setVisible(false);
+    scene.bgGround.setAlpha(0);
     const moonSurface = scene.add.ellipse(worldWidth / 2, worldHeight + 150, 1400, 560, 0x8f97ab, 0.8).setDepth(2);
     const ringA = scene.add.ellipse(worldWidth / 2, worldHeight + 160, 1250, 500, 0xc7cdd8, 0.08).setDepth(3);
     const ringB = scene.add.ellipse(worldWidth / 2, worldHeight + 170, 1120, 440, 0xdde3ef, 0.08).setDepth(3);
@@ -124,5 +302,65 @@ export function applyMap(scene, mapKey, worldWidth, worldHeight) {
 
     scene.tweens.add({ targets: ringA, x: worldWidth / 2 + 24, y: worldHeight + 152, duration: 4600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     scene.tweens.add({ targets: ringB, x: worldWidth / 2 - 24, y: worldHeight + 178, duration: 5100, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+
+    // Floating comets
+    const spawnComet = () => {
+      const fromLeft = Math.random() > 0.5;
+      const startX = fromLeft ? -60 : worldWidth + 60;
+      const endX = fromLeft ? worldWidth + 60 : -60;
+      const startY = Phaser.Math.Between(30, 260);
+      const endY = startY + Phaser.Math.Between(-40, 80);
+      const headR = Phaser.Math.Between(3, 6);
+      const tailLen = Phaser.Math.Between(22, 52);
+      const tailDir = fromLeft ? -1 : 1;
+      const cometHead = scene.add.circle(startX, startY, headR, 0xfff8e0, 0.95).setDepth(4);
+      // Use graphics for tail so we can draw it pointing in correct direction
+      const cometTail = scene.add.graphics().setDepth(4);
+      cometTail.fillStyle(0xffcc66, 0.5);
+      // Tail points away from travel direction (behind the head)
+      if (fromLeft) {
+        cometTail.fillTriangle(-tailLen, 0, 0, -3, 0, 3);
+      } else {
+        cometTail.fillTriangle(0, -3, tailLen, 0, 0, 3);
+      }
+      cometTail.x = startX;
+      cometTail.y = startY;
+      scene.backgroundElements.push(cometHead, cometTail);
+      const dur = Phaser.Math.Between(3000, 6000);
+      scene.tweens.add({ targets: cometHead, x: endX, y: endY, duration: dur, ease: 'Linear',
+        onUpdate: () => { cometTail.x = cometHead.x; cometTail.y = cometHead.y; },
+        onComplete: () => { cometHead.setVisible(false); cometTail.setVisible(false); },
+      });
+    };
+    // Spawn comets periodically
+    for (let c = 0; c < 3; c += 1) {
+      scene.time.delayedCall(c * 2200, spawnComet);
+    }
+    scene.time.addEvent({ delay: 5500, loop: true, callback: spawnComet });
+
+    // Satellites orbiting near the earth
+    const satConfigs = [
+      { r: 55, speed: 7000, size: 4, color: 0xc0c0c0 },
+      { r: 80, speed: 11000, size: 3, color: 0x8899aa },
+      { r: 42, speed: 5500, size: 3, color: 0xddddee },
+    ];
+    for (const cfg of satConfigs) {
+      const sat = scene.add.rectangle(1040, 104 - cfg.r, cfg.size, cfg.size * 2, cfg.color, 0.9).setDepth(5);
+      const panel1 = scene.add.rectangle(1040 - cfg.size * 1.5, 104 - cfg.r, cfg.size * 2, cfg.size * 0.6, 0x3366aa, 0.85).setDepth(5);
+      const panel2 = scene.add.rectangle(1040 + cfg.size * 1.5, 104 - cfg.r, cfg.size * 2, cfg.size * 0.6, 0x3366aa, 0.85).setDepth(5);
+      scene.backgroundElements.push(sat, panel1, panel2);
+
+      let angle = Phaser.Math.Between(0, 360);
+      scene.tweens.addCounter({
+        from: angle, to: angle + 360, duration: cfg.speed, repeat: -1, ease: 'Linear',
+        onUpdate: (tw) => {
+          const a = Phaser.Math.DegToRad(tw.getValue());
+          const cx = 1040; const cy = 104;
+          sat.x = cx + Math.cos(a) * cfg.r; sat.y = cy + Math.sin(a) * cfg.r * 0.4;
+          panel1.x = sat.x - cfg.size * 1.5; panel1.y = sat.y;
+          panel2.x = sat.x + cfg.size * 1.5; panel2.y = sat.y;
+        },
+      });
+    }
   }
 }

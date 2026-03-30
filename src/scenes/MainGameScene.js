@@ -126,7 +126,7 @@ export class MainScene extends Phaser.Scene {
     this.jetpackFuelDrainPerSec = this.jetpackFuelMax / 10;
     this.jetpackThrustPerSec = 920;
     this.jetpackMaxLiftSpeed = -340;
-    this.flashlightOn = true;
+    this.flashlightOn = false;
     this.facingDir = 1;
     this.jumpVelocity = -230;
     this.kittenExtraGravity = 300;
