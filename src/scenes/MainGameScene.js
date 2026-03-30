@@ -182,6 +182,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.setMobileGameUi(true);
     this.createBackground();
 
     this.ground = this.physics.add.staticImage(WORLD_WIDTH / 2, WORLD_HEIGHT - 20, null);
@@ -237,6 +238,7 @@ export class MainScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', this.resumeAudio, this);
     this.input.on('pointerdown', this.resumeAudio, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.stopBackgroundMusic());
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.setMobileGameUi(false));
 
     this.createHud();
     this.startBackgroundMusic();
@@ -418,6 +420,13 @@ export class MainScene extends Phaser.Scene {
     }
   }
 
+  setMobileGameUi(active) {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    document.body.classList.toggle('game-ui-active', active);
+  }
+
   resumeAudio() {
     resumeAudioContext(this);
   }
@@ -552,7 +561,8 @@ export class MainScene extends Phaser.Scene {
     }
 
     // Snapshot velocity before physics step so the stomp callback has reliable data.
-    if (Phaser.Input.Keyboard.JustDown(this.fullscreenKey)) {
+    if (Phaser.Input.Keyboard.JustDown(this.fullscreenKey) ||
+        (window._mobile?.fullscreenJustDown && ((window._mobile.fullscreenJustDown = false) || true))) {
       this.toggleFullscreen();
     }
 

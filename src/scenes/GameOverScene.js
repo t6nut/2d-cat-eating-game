@@ -17,6 +17,10 @@ export class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('game-ui-active');
+    }
+
     drawNightBackground(this, W, H);
 
     if (this.won) {

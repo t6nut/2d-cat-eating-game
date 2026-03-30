@@ -116,17 +116,26 @@ canvas {
 .ctrl-group.ctrl-menu {
   top: calc(env(safe-area-inset-top, 0px) + 14px);
   right: 14px;
-  align-items: flex-start;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.game-only-control {
+  display: none;
+}
+
+body.game-ui-active .game-only-control {
+  display: flex;
 }
 
 .ctrl-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
   border: 2px solid rgba(100, 160, 255, 0.6);
   background: rgba(10, 25, 70, 0.75);
   color: #c8d8f0;
-  font-size: 1.4rem;
+  font-size: 1.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,22 +153,22 @@ canvas {
 }
 
 .ctrl-btn.ctrl-sm {
-  width: 44px;
-  height: 44px;
-  font-size: 1rem;
-  border-radius: 10px;
+  width: 58px;
+  height: 58px;
+  font-size: 1.2rem;
+  border-radius: 14px;
 }
 
 .ctrl-btn.ctrl-lg {
-  width: 68px;
-  height: 68px;
-  font-size: 1.6rem;
+  width: 82px;
+  height: 82px;
+  font-size: 2rem;
   border-radius: 50%;
   border-color: rgba(130, 200, 255, 0.7);
 }
 
 .ctrl-btn.ctrl-menu-btn {
-  font-size: 1.3rem;
+  font-size: 1.55rem;
   background: rgba(40, 10, 70, 0.82);
   border-color: rgba(180, 100, 255, 0.7);
 }

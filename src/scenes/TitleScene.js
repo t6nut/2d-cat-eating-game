@@ -94,6 +94,10 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create() {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('game-ui-active');
+    }
+
     this.createMenuBackdrop();
 
     // Chef oven flies in from the left then hovers
@@ -335,7 +339,7 @@ export class TitleScene extends Phaser.Scene {
     const panelCX = W / 2;    // 640
     const panelY  = 548;
     const panelW  = 1000;
-    const panelH  = 224;
+    const panelH  = 250;
 
     const panel = this.add.rectangle(panelCX, panelY, panelW, panelH, 0x0a142d, 0.9);
     panel.setStrokeStyle(3, 0x9bc4ff, 0.6);
@@ -390,9 +394,9 @@ export class TitleScene extends Phaser.Scene {
     }, panelCX, 140, 125);
 
     // --- Start button ---
-    this.startButton = this.add.rectangle(panelCX, panelY + 93, 290, 42, 0x4d596b, 1)
+    this.startButton = this.add.rectangle(panelCX, panelY + 118, 290, 42, 0x4d596b, 1)
       .setDepth(17).setStrokeStyle(3, 0x9bc4ff, 0.5);
-    this.startText = this.add.text(panelCX, panelY + 93, 'Select All Options', {
+    this.startText = this.add.text(panelCX, panelY + 118, 'Select All Options', {
       ...TEXT_STYLE, fontSize: '20px', color: '#c6d0dd', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(18);
     this.startButton.setInteractive({ useHandCursor: true });

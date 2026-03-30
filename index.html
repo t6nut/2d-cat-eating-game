@@ -34,15 +34,16 @@
         <button id="btn-light" class="ctrl-btn ctrl-sm" aria-label="Toggle light">F</button>
         <button id="btn-jump"  class="ctrl-btn ctrl-lg" aria-label="Jump">&#x25B2;</button>
       </div>
-      <div class="ctrl-group ctrl-menu">
+      <div class="ctrl-group ctrl-menu game-only-control">
         <button id="btn-menu" class="ctrl-btn ctrl-menu-btn" aria-label="Menu">&#x2630;</button>
+        <button id="btn-fullscreen" class="ctrl-btn ctrl-menu-btn" aria-label="Fullscreen">&#x26F6;</button>
       </div>
     </div>
 
     <script type="module" src="src/main.js"></script>
     <script>
       // Mobile control state – read by catPhysics.js via window._mobile
-      window._mobile = { left: false, right: false, jumpJustDown: false, lightJustDown: false, menuJustDown: false };
+      window._mobile = { left: false, right: false, jumpJustDown: false, lightJustDown: false, menuJustDown: false, fullscreenJustDown: false };
 
       function wireCtrl(id, onDown, onUp) {
         const el = document.getElementById(id);
@@ -57,6 +58,7 @@
       wireCtrl('btn-jump',  function() { window._mobile.jumpJustDown  = true; }, function() {});
       wireCtrl('btn-light', function() { window._mobile.lightJustDown = true; }, function() {});
       wireCtrl('btn-menu',  function() { window._mobile.menuJustDown  = true; }, function() {});
+      wireCtrl('btn-fullscreen', function() { window._mobile.fullscreenJustDown = true; }, function() {});
     </script>
   </body>
 </html>
