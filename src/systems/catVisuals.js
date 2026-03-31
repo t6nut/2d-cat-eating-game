@@ -222,34 +222,43 @@ export function drawJetpackVisual(scene, active) {
   const scale = scene.sizeMultiplier;
   const packX = scene.kitten.x;
   const packY = scene.kitten.y - 11 * scale;
+
+  drawJetpackAt(scene, scene.jetpackPack, scene.jetpackFlames, packX, packY, scale, active, scene.time.now);
+}
+
+export function drawJetpackAt(scene, packGraphics, flameGraphics, packX, packY, scale, active, timeNow = 0) {
+  if (!packGraphics || !flameGraphics) {
+    return;
+  }
+
   const packW = 12 * scale;
   const packH = 14 * scale;
 
-  scene.jetpackPack.clear();
-  scene.jetpackPack.fillStyle(0x5d6573, 0.96);
-  scene.jetpackPack.fillRoundedRect(packX - packW * 0.5, packY - packH * 0.5, packW, packH, 2 * scale);
-  scene.jetpackPack.fillStyle(0x939db0, 1);
-  scene.jetpackPack.fillRect(packX - 2 * scale, packY - 3 * scale, 4 * scale, 5 * scale);
-  scene.jetpackPack.fillStyle(0x2d3340, 0.9);
+  packGraphics.clear();
+  packGraphics.fillStyle(0x5d6573, 0.96);
+  packGraphics.fillRoundedRect(packX - packW * 0.5, packY - packH * 0.5, packW, packH, 2 * scale);
+  packGraphics.fillStyle(0x939db0, 1);
+  packGraphics.fillRect(packX - 2 * scale, packY - 3 * scale, 4 * scale, 5 * scale);
+  packGraphics.fillStyle(0x2d3340, 0.9);
   // Side edges/pipes peek from both sides of the cat.
-  scene.jetpackPack.fillRect(packX - 8.2 * scale, packY - 0.8 * scale, 2.6 * scale, 6.5 * scale);
-  scene.jetpackPack.fillRect(packX + 5.6 * scale, packY - 0.8 * scale, 2.6 * scale, 6.5 * scale);
+  packGraphics.fillRect(packX - 8.2 * scale, packY - 0.8 * scale, 2.6 * scale, 6.5 * scale);
+  packGraphics.fillRect(packX + 5.6 * scale, packY - 0.8 * scale, 2.6 * scale, 6.5 * scale);
 
-  scene.jetpackFlames.clear();
+  flameGraphics.clear();
   if (!active) {
     return;
   }
 
-  const flicker = 0.75 + Math.sin(scene.time.now * 0.03) * 0.25;
+  const flicker = 0.75 + Math.sin(timeNow * 0.03) * 0.25;
   const flameLen = 10 * scale * flicker;
   const leftNozzleX = packX - 6.9 * scale;
   const rightNozzleX = packX + 6.9 * scale;
   const nozzleY = packY + 7.6 * scale;
 
-  scene.jetpackFlames.fillStyle(0xffb347, 0.95);
-  scene.jetpackFlames.fillTriangle(leftNozzleX - 1.5 * scale, nozzleY, leftNozzleX + 1.5 * scale, nozzleY, leftNozzleX, nozzleY + flameLen);
-  scene.jetpackFlames.fillTriangle(rightNozzleX - 1.5 * scale, nozzleY, rightNozzleX + 1.5 * scale, nozzleY, rightNozzleX, nozzleY + flameLen);
-  scene.jetpackFlames.fillStyle(0xfff0be, 0.85);
-  scene.jetpackFlames.fillTriangle(leftNozzleX - scale, nozzleY + scale, leftNozzleX + scale, nozzleY + scale, leftNozzleX, nozzleY + flameLen * 0.65);
-  scene.jetpackFlames.fillTriangle(rightNozzleX - scale, nozzleY + scale, rightNozzleX + scale, nozzleY + scale, rightNozzleX, nozzleY + flameLen * 0.65);
+  flameGraphics.fillStyle(0xffb347, 0.95);
+  flameGraphics.fillTriangle(leftNozzleX - 1.5 * scale, nozzleY, leftNozzleX + 1.5 * scale, nozzleY, leftNozzleX, nozzleY + flameLen);
+  flameGraphics.fillTriangle(rightNozzleX - 1.5 * scale, nozzleY, rightNozzleX + 1.5 * scale, nozzleY, rightNozzleX, nozzleY + flameLen);
+  flameGraphics.fillStyle(0xfff0be, 0.85);
+  flameGraphics.fillTriangle(leftNozzleX - scale, nozzleY + scale, leftNozzleX + scale, nozzleY + scale, leftNozzleX, nozzleY + flameLen * 0.65);
+  flameGraphics.fillTriangle(rightNozzleX - scale, nozzleY + scale, rightNozzleX + scale, nozzleY + scale, rightNozzleX, nozzleY + flameLen * 0.65);
 }

@@ -17,12 +17,12 @@ export function createHud(scene, worldWidth) {
   scene.fuelBarFrame = scene.add.graphics().setDepth(20);
   scene.fuelBarFill = scene.add.graphics().setDepth(20);
 
-  const pizzaMeterX = worldWidth - 82;
-  const pizzaMeterY = 102;
-  const pizzaMeterScale = 0.28;
-  const pizzaMeterRadius = 42;
+  const pizzaMeterX = worldWidth - 86;
+  const pizzaMeterY = 88;
+  const pizzaMeterSize = 76;
+  const pizzaMeterRadius = pizzaMeterSize * 0.5;
   scene.pizzaMeterBase = scene.add.image(pizzaMeterX, pizzaMeterY, 'pizzaWhole')
-    .setScale(pizzaMeterScale)
+    .setDisplaySize(pizzaMeterSize, pizzaMeterSize)
     .setAlpha(0.5)
     .setDepth(20);
   scene.pizzaMeterSlices = [];
@@ -41,16 +41,70 @@ export function createHud(scene, worldWidth) {
     scene.pizzaMeterSliceMasks.push(maskShape);
 
     const sliceFill = scene.add.image(pizzaMeterX, pizzaMeterY, 'pizzaWhole')
-      .setScale(pizzaMeterScale)
+      .setDisplaySize(pizzaMeterSize, pizzaMeterSize)
       .setDepth(21)
       .setVisible(false);
     sliceFill.setMask(maskShape.createGeometryMask());
     scene.pizzaMeterSlices.push(sliceFill);
   }
 
-  scene.pizzaMeterLabel = scene.add.text(pizzaMeterX, pizzaMeterY + 42, 'Pizza Meter', {
+  scene.pizzaMeterTooltipText = scene.add.text(pizzaMeterX - 18, pizzaMeterY + 64,
+    'Catch pizza slices from air to receive a full pizza delivery.', {
+      fontFamily: '"Trebuchet MS", "Verdana", sans-serif',
+      fontSize: '16px',
+      color: '#fff8e6',
+      stroke: '#2f1b14',
+      strokeThickness: 3,
+      wordWrap: { width: 300 },
+      align: 'right',
+    }).setOrigin(1, 0).setDepth(25).setVisible(false);
+  scene.pizzaMeterTooltipBg = scene.add.rectangle(
+    pizzaMeterX - 4,
+    pizzaMeterY + 58,
+    scene.pizzaMeterTooltipText.width + 28,
+    scene.pizzaMeterTooltipText.height + 18,
+    0x071120,
+    0.92,
+  )
+    .setOrigin(1, 0)
+    .setDepth(24)
+    .setVisible(false)
+    .setStrokeStyle(2, 0x9bc4ff, 0.55);
+
+  scene.pizzaMeterHotspot = scene.add.zone(pizzaMeterX, pizzaMeterY, pizzaMeterSize + 16, pizzaMeterSize + 16)
+    .setDepth(26)
+    .setInteractive({ useHandCursor: true });
+  scene.pizzaMeterTooltipTimer = null;
+  scene.showPizzaMeterTooltip = () => {
+    scene.pizzaMeterTooltipBg.setVisible(true);
+    scene.pizzaMeterTooltipText.setVisible(true);
+  };
+  scene.hidePizzaMeterTooltip = () => {
+    scene.pizzaMeterTooltipBg.setVisible(false);
+    scene.pizzaMeterTooltipText.setVisible(false);
+  };
+  scene.pizzaMeterHotspot.on('pointerover', () => {
+    if (scene.pizzaMeterTooltipTimer) {
+      scene.pizzaMeterTooltipTimer.remove(false);
+      scene.pizzaMeterTooltipTimer = null;
+    }
+    scene.showPizzaMeterTooltip();
+  });
+  scene.pizzaMeterHotspot.on('pointerout', () => scene.hidePizzaMeterTooltip());
+  scene.pizzaMeterHotspot.on('pointerdown', () => {
+    if (scene.pizzaMeterTooltipTimer) {
+      scene.pizzaMeterTooltipTimer.remove(false);
+    }
+    scene.showPizzaMeterTooltip();
+    scene.pizzaMeterTooltipTimer = scene.time.delayedCall(2200, () => {
+      scene.hidePizzaMeterTooltip();
+      scene.pizzaMeterTooltipTimer = null;
+    });
+  });
+
+  scene.pizzaMeterLabel = scene.add.text(pizzaMeterX, pizzaMeterY + 48, 'Pizza Meter', {
     fontFamily: '"Trebuchet MS", "Verdana", sans-serif',
-    fontSize: '15px',
+    fontSize: '17px',
     color: '#fff8e6',
     stroke: '#2f1b14',
     strokeThickness: 3,

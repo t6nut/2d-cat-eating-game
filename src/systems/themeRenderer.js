@@ -36,11 +36,6 @@ export function applyTheme(scene, themeKey, worldWidth) {
       const landA = scene.add.ellipse(1031, 97, 18, 12, 0x69c271, 0.9).setDepth(4);
       const landB = scene.add.ellipse(1048, 112, 14, 9, 0x69c271, 0.86).setDepth(4);
       scene.backgroundElements.push(earthGlow, earthOcean, landA, landB);
-    } else {
-      const moonGlow = scene.add.circle(820, 100, 74, 0xbccfff, 0.2).setDepth(2);
-      const moon = scene.add.circle(820, 100, 34, 0xe9f3ff, 1).setDepth(3);
-      const moonshine = scene.add.ellipse(810, 350, 420, 230, 0x9dbbff, 0.12).setDepth(2);
-      scene.backgroundElements.push(moonGlow, moon, moonshine);
     }
 
     scene.bgSky.setFillStyle(scene.currentMapKey === 'moon' ? 0x0c1330 : theme.skyColor, 0.92);

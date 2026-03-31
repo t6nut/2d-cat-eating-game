@@ -1,6 +1,7 @@
 import { TEXT_STYLE } from '../utils.js';
 import { clampCatSize } from '../systems/catGrowth.js';
 import { createBackground as createBg, applyMap } from '../systems/mapRenderer.js';
+import { drawJetpackAt } from '../systems/catVisuals.js';
 
 const W = 1280;
 const H = 720;
@@ -303,27 +304,7 @@ export class TitleScene extends Phaser.Scene {
 
     const catX = this.charPreviewSprite ? this.charPreviewSprite.x : W / 2;
     const catY = this.charPreviewSprite ? this.charPreviewSprite.y : 300;
-    const s = 1.4;
-    const packX = catX;
-    const packY = catY + 4;
-
-    this.menuJetpack.fillStyle(0x5d6573, 0.96);
-    this.menuJetpack.fillRoundedRect(packX - 8 * s, packY - 10 * s, 16 * s, 20 * s, 3 * s);
-    this.menuJetpack.fillStyle(0x93a3b8, 1);
-    this.menuJetpack.fillRect(packX - 3 * s, packY - 5 * s, 6 * s, 8 * s);
-    this.menuJetpack.fillStyle(0x2d3340, 0.9);
-    this.menuJetpack.fillRect(packX - 9.2 * s, packY + 2 * s, 2.6 * s, 8 * s);
-    this.menuJetpack.fillRect(packX + 6.6 * s, packY + 2 * s, 2.6 * s, 8 * s);
-
-    const flicker = 0.8 + Math.sin(time * 0.018) * 0.2;
-    const flameLen = 26 * flicker;
-
-    this.menuJetpackFlames.fillStyle(0xffb347, 0.94);
-    this.menuJetpackFlames.fillTriangle(packX - 5, packY + 13, packX + 1, packY + 13, packX - 2, packY + 13 + flameLen);
-    this.menuJetpackFlames.fillTriangle(packX - 1, packY + 13, packX + 5, packY + 13, packX + 2, packY + 13 + flameLen);
-    this.menuJetpackFlames.fillStyle(0xfff2c7, 0.82);
-    this.menuJetpackFlames.fillTriangle(packX - 4, packY + 14, packX, packY + 14, packX - 2, packY + 10 + flameLen * 0.65);
-    this.menuJetpackFlames.fillTriangle(packX, packY + 14, packX + 4, packY + 14, packX + 2, packY + 10 + flameLen * 0.65);
+    drawJetpackAt(this, this.menuJetpack, this.menuJetpackFlames, catX, catY + 4, 1.4, true, time);
   }
 
   createOptionsPanel() {
