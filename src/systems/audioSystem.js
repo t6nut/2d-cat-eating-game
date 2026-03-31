@@ -170,3 +170,28 @@ export function playZombieStompSound(scene) {
   osc.start(now);
   osc.stop(now + 0.13);
 }
+
+export function playChefTossSound(scene) {
+  if (!scene.audioCtx) {
+    return;
+  }
+
+  const now = scene.audioCtx.currentTime;
+  const notes = [740, 920, 1180];
+
+  for (let i = 0; i < notes.length; i += 1) {
+    const start = now + i * 0.055;
+    const osc = scene.audioCtx.createOscillator();
+    const gain = scene.audioCtx.createGain();
+    osc.type = i === notes.length - 1 ? 'triangle' : 'square';
+    osc.frequency.setValueAtTime(notes[i], start);
+    osc.frequency.exponentialRampToValueAtTime(notes[i] * 1.06, start + 0.045);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.linearRampToValueAtTime(0.036, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.085);
+    osc.connect(gain);
+    gain.connect(scene.audioCtx.destination);
+    osc.start(start);
+    osc.stop(start + 0.09);
+  }
+}

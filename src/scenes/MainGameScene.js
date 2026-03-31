@@ -7,7 +7,7 @@ import { createBackground as renderBackground, applyMap as renderMap } from '../
 import { applyTheme as renderTheme } from '../systems/themeRenderer.js';
 import { schedulePizzaDrops as scheduleFoodDrops, spawnFood as spawnFoodDrop, spawnSliceFromHelicopter as spawnSliceDrop, launchAirplaneBigPizza as launchBonusFlyover, handleFoodHitGround as onFoodHitGround, getGroundAdjustedFoodValue as getFoodGroundValue, handlePizzaCaught as onPizzaCaught, consumeFood as consumeCaughtFood, cleanupMissedPizza as cleanupMissedFood } from '../systems/foodSystem.js';
 import { spawnBatteryDrop as spawnBatteryPickupDrop, spawnFuelDrop as spawnFuelPickupDrop, handleBatteryHitGround as onBatteryHitGround, handleFuelHitGround as onFuelHitGround, handleBatteryPickup as onBatteryPickup, handleFuelPickup as onFuelPickup, ensureBatteryTexture as ensureBatterySprite, ensureFuelTexture as ensureFuelSprite } from '../systems/pickupsSystem.js';
-import { startBackgroundMusic as startMusicLoop, stopBackgroundMusic as stopMusicLoop, playMusicStep as playMusicTick, resumeAudio as resumeAudioContext, playEnemyEatSound as playEnemyBiteSound, playCatchSound as playFoodCatchSound, playEatSound as playCatEatSound, playAirplaneSound as playPlaneSound, playDogBarkSound as playBarkSound, playZombieStompSound as playStompSound } from '../systems/audioSystem.js';
+import { startBackgroundMusic as startMusicLoop, stopBackgroundMusic as stopMusicLoop, playMusicStep as playMusicTick, resumeAudio as resumeAudioContext, playEnemyEatSound as playEnemyBiteSound, playCatchSound as playFoodCatchSound, playEatSound as playCatEatSound, playAirplaneSound as playPlaneSound, playDogBarkSound as playBarkSound, playZombieStompSound as playStompSound, playChefTossSound as playChefCalloutSound } from '../systems/audioSystem.js';
 import { createHud as createHudElements, updateHud as updateHudElements, showCatchPopup as showPopupText } from '../systems/hudSystem.js';
 
 const WORLD_WIDTH = 1280;
@@ -189,7 +189,15 @@ export class MainScene extends Phaser.Scene {
     this.setMobileGameUi(true);
     this.createBackground();
 
-    this.ground = this.physics.add.staticImage(WORLD_WIDTH / 2, WORLD_HEIGHT - 20, null);
+    if (!this.textures.exists('groundCollider')) {
+      const colliderGfx = this.make.graphics({ add: false });
+      colliderGfx.fillStyle(0xffffff, 0);
+      colliderGfx.fillRect(0, 0, 2, 2);
+      colliderGfx.generateTexture('groundCollider', 2, 2);
+      colliderGfx.destroy();
+    }
+
+    this.ground = this.physics.add.staticImage(WORLD_WIDTH / 2, WORLD_HEIGHT - 20, 'groundCollider');
     this.ground.displayWidth = WORLD_WIDTH;
     this.ground.displayHeight = 40;
     this.ground.setVisible(false);
@@ -493,6 +501,10 @@ export class MainScene extends Phaser.Scene {
     playStompSound(this);
   }
 
+  playChefTossSound() {
+    playChefCalloutSound(this);
+  }
+
   ensureZombieTexture() {
     ensureZombieSprite(this);
   }
@@ -527,6 +539,15 @@ export class MainScene extends Phaser.Scene {
 
   drawJetpackVisual(active) {
     drawJetpackRender(this, active);
+  }
+
+  isJetpackControlDown() {
+    const mobileJumpHeld = window._mobile?.jumpHeld ?? false;
+    return this.jetpackKey.isDown || mobileJumpHeld;
+  }
+
+  isJetpackActive() {
+    return this.currentMapKey === 'moon' && this.isJetpackControlDown() && this.jetpackFuel > 0;
   }
 
   burnVampireToAsh(enemy) {
@@ -592,7 +613,7 @@ export class MainScene extends Phaser.Scene {
       this.updateHud();
     }
 
-    const jetpackActive = this.currentMapKey === 'moon' && this.jetpackKey.isDown && this.jetpackFuel > 0;
+    const jetpackActive = this.isJetpackActive();
 
     if (jetpackActive) {
       this.jetpackFuel = Math.max(0, this.jetpackFuel - (this.jetpackFuelDrainPerSec * delta) / 1000);
@@ -645,10 +666,9 @@ export class MainScene extends Phaser.Scene {
       this.ovenFlameTime += 0.13;
       const fl = this.ovenFlameGfx;
       fl.clear();
-      // SVG viewBox 190x140 -> sprite origin maps to SVG point (95, 70)
-      // Oven group is lowered in the sprite, so keep the flame overlay aligned to the door.
-      const fx = this.chefHeli.x + (79 - 95) * 0.7; // ≈ -11
-      const fy = this.chefHeli.y + (97 - 70) * 0.7; // ≈ +19
+      // Align with the SVG's static flame centered in the oven opening.
+      const fx = this.chefHeli.x + (79 - 95) * 0.7;
+      const fy = this.chefHeli.y + (103 - 70) * 0.7;
       const f1 = 0.72 + Math.sin(this.ovenFlameTime * 3.1) * 0.14;
       const f2 = 0.72 + Math.sin(this.ovenFlameTime * 7.5 + 1.2) * 0.16;
       fl.fillStyle(0xff4400, f1 * 0.9);
@@ -684,6 +704,20 @@ export class MainScene extends Phaser.Scene {
         g.fillStyle(0xf5c49e, 1);
         g.fillCircle(handX, handY, 4);
 
+        const mouthX = this.chefHeli.x + (152 - 95) * 0.7;
+        const mouthY = this.chefHeli.y + (103 - 70) * 0.7 + swing * 1.2;
+        const mouthW = 10 + swing * 5;
+        const mouthH = 4 + swing * 3;
+        g.fillStyle(0x220703, 0.98);
+        g.fillEllipse(mouthX, mouthY, mouthW, mouthH);
+        g.fillStyle(0xffffff, 0.95);
+        g.fillRect(mouthX - mouthW * 0.34, mouthY - mouthH * 0.52, mouthW * 0.68, 1.5);
+        g.fillStyle(0x2a140e, 0.9);
+        g.fillRect(mouthX - mouthW * 0.34, mouthY - mouthH * 0.58, mouthW * 0.68, 0.7);
+        g.fillStyle(0xffffff, 0.95);
+        g.fillTriangle(mouthX - 2.8, mouthY - 0.2, mouthX - 1.5, mouthY - 0.2, mouthX - 2.15, mouthY + 2.8);
+        g.fillTriangle(mouthX + 1.5, mouthY - 0.2, mouthX + 2.8, mouthY - 0.2, mouthX + 2.15, mouthY + 2.8);
+
         // Tossed slice follows hand with a slight lead and spin.
         const sliceX = handX + 5 + swing * 4;
         const sliceY = handY - 7 - swing * 2;
@@ -702,6 +736,7 @@ export class MainScene extends Phaser.Scene {
       return;
     }
     this.chefTossUntil = this.time.now + 180;
+    this.playChefTossSound();
   }
 
   updateKittenMovement(delta) {

@@ -366,9 +366,11 @@ export function ensureVampireTexture(scene) {
     g.fillStyle(0x220f2e, 1);
     g.fillRect(11, 13, 1, 1);
     g.fillRect(19, 13, 1, 1);
+    g.fillStyle(0x220f2e, 0.95);
+    g.fillRect(13, 17, 6, 1);
     g.fillStyle(0xffffff, 1);
-    g.fillRect(13, 16, 1, 2);
-    g.fillRect(18, 16, 1, 2);
+    g.fillRect(13, 18, 1, 3);
+    g.fillRect(18, 18, 1, 3);
     g.fillStyle(0x3f284f, 1);
     g.fillRect(7, leftLegY, 6, 2);
     g.fillRect(19, rightLegY, 6, 2);

@@ -56,7 +56,7 @@ export function updateKittenMovement(scene, delta) {
     scene.kitten.setVelocityY(scene.jumpVelocity);
   }
 
-  if (scene.currentMapKey === 'moon' && (scene.jetpackKey.isDown || (mob?.jumpHeld ?? false)) && scene.jetpackFuel > 0) {
+  if (typeof scene.isJetpackActive === 'function' ? scene.isJetpackActive() : (scene.currentMapKey === 'moon' && (scene.jetpackKey.isDown || (mob?.jumpHeld ?? false)) && scene.jetpackFuel > 0)) {
     const lift = scene.jetpackThrustPerSec * (delta / 1000);
     scene.kitten.setVelocityY(Math.max(scene.jetpackMaxLiftSpeed, scene.kitten.body.velocity.y - lift));
   }

@@ -346,11 +346,10 @@ export function applyMap(scene, mapKey, worldWidth, worldHeight) {
     scene.bgSky.setFillStyle(0x0c1330, 1);
     scene.bgGround.setVisible(false);
     scene.bgGround.setAlpha(0);
-    const moonFloor = scene.add.rectangle(worldWidth / 2, worldHeight - 26, worldWidth, 140, 0x8f97ab, 0.94).setDepth(2);
     const moonSurface = scene.add.ellipse(worldWidth / 2, worldHeight + 150, 1400, 560, 0x8f97ab, 0.8).setDepth(2);
     const ringA = scene.add.ellipse(worldWidth / 2, worldHeight + 160, 1250, 500, 0xc7cdd8, 0.08).setDepth(3);
     const ringB = scene.add.ellipse(worldWidth / 2, worldHeight + 170, 1120, 440, 0xdde3ef, 0.08).setDepth(3);
-    scene.backgroundElements.push(moonFloor, moonSurface, ringA, ringB);
+    scene.backgroundElements.push(moonSurface, ringA, ringB);
 
     for (let i = 0; i < 16; i += 1) {
       const cx = Phaser.Math.Between(90, worldWidth - 90);
