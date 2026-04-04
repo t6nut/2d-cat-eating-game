@@ -65,12 +65,17 @@ export function updateDropShadow(scene, item) {
 
 export function updateShadows(scene) {
   if (scene.kittenShadow?.active) {
+    const groundY = getGroundSurfaceY(scene);
     scene.kittenShadow.x = scene.kitten.x;
-    scene.kittenShadow.y = getGroundSurfaceY(scene) + 1;
-    const shadowScale = Phaser.Math.Clamp(scene.sizeMultiplier, 0.8, 6);
+    scene.kittenShadow.y = groundY + 1;
+    // Base size reduced 30% (44→31, 15→10.5) with no upper growth cap.
+    const shadowScale = Math.max(0.8, scene.sizeMultiplier);
+    // Shrink shadow as the cat rises — 0 altitude = full size, 540 px up = 15% size.
+    const altitude = Phaser.Math.Clamp(groundY - scene.kitten.y, 0, 540);
+    const altitudeShrink = Phaser.Math.Clamp(1 - altitude / 540 * 0.85, 0.15, 1);
     scene.kittenShadow.setSize(
-      Math.round(44 * shadowScale),
-      Math.round(Math.max(10, 15 * shadowScale * 0.65)),
+      Math.round(31 * shadowScale * altitudeShrink),
+      Math.round(Math.max(7, 10.5 * shadowScale * 0.65 * altitudeShrink)),
     );
   }
   if (scene.heliShadow?.active) {

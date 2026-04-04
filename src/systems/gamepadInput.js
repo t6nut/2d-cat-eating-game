@@ -20,6 +20,21 @@
 
   // Previous pressed state for edge-detection (just-down) buttons
   var prev = { A: false, X: false, Start: false };
+  var rafId = null;
+  var keepaliveFrames = 0;
+  // Send a keepalive every N frames (~5 s at 60 fps).
+  // Xbox wireless controllers power off when the host stops sending
+  // XInput keepalive packets; a zero-intensity vibration effect satisfies
+  // the driver without producing any noticeable rumble for the player.
+  var KEEPALIVE_INTERVAL = 300;
+
+  function sendKeepalive(gp) {
+    if (gp.vibrationActuator && gp.vibrationActuator.playEffect) {
+      gp.vibrationActuator.playEffect('dual-rumble', {
+        startDelay: 0, duration: 16, weakMagnitude: 0, strongMagnitude: 0,
+      }).catch(function () {});
+    }
+  }
 
   function poll() {
     var gp = navigator.getGamepads()[0];
@@ -53,24 +68,58 @@
       var startDown = btns[9] ? btns[9].pressed : false;
       if (startDown && !prev.Start) m.menuJustDown = true;
       prev.Start = startDown;
+
+      // ── Wireless keepalive ────────────────────────────────────────
+      keepaliveFrames += 1;
+      if (keepaliveFrames >= KEEPALIVE_INTERVAL) {
+        keepaliveFrames = 0;
+        sendKeepalive(gp);
+      }
     }
 
-    requestAnimationFrame(poll);
+    rafId = requestAnimationFrame(poll);
   }
 
-  // Begin polling immediately so we catch gamepads already connected
-  // (some browsers don't re-fire gamepadconnected after page load).
-  poll();
+  function startPolling() {
+    if (!rafId) {
+      prev = { A: false, X: false, Start: false };
+      keepaliveFrames = 0;
+      rafId = requestAnimationFrame(poll);
+      // Send an immediate keepalive so the controller doesn't time out
+      // in the first few seconds before the regular interval fires.
+      var gp = navigator.getGamepads()[0];
+      if (gp) sendKeepalive(gp);
+    }
+  }
 
-  // Reset edge-detection state when a new gamepad is connected mid-session.
+  function stopPolling() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  // Pause polling when the tab is hidden so Chrome releases the XInput slot
+  // and the wireless receiver can go idle without dropping the controller.
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      stopPolling();
+    } else {
+      // Resume if a gamepad is still connected.
+      if (navigator.getGamepads()[0]) startPolling();
+    }
+  });
+
+  // Only start polling when a gamepad connects.
   window.addEventListener('gamepadconnected', function (e) {
     console.log('[Gamepad] Connected:', e.gamepad.id);
-    prev = { A: false, X: false, Start: false };
+    startPolling();
   });
 
   window.addEventListener('gamepaddisconnected', function (e) {
     console.log('[Gamepad] Disconnected:', e.gamepad.id);
-    // Clear movement so the cat doesn't keep running after disconnect
+    stopPolling();
+    // Clear movement so the cat doesn't keep running after disconnect.
     if (window._mobile) {
       window._mobile.left  = false;
       window._mobile.right = false;

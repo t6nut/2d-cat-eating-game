@@ -172,6 +172,10 @@ export class MainScene extends Phaser.Scene {
     }
 
     this.zombiesEnabled = this.currentEnemyType !== 'off';
+    // Always reset flyover state so a mid-flight airplane when ESC is pressed
+    // (tween onComplete never fires) doesn't leave airplaneActive stuck as true.
+    this.airplaneActive = false;
+    this.pendingBonusFlyovers = 0;
 
     if (this.currentMapKey === 'moon') {
       this.jumpVelocity = -460;

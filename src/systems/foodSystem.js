@@ -84,9 +84,16 @@ export function launchAirplaneBigPizza(scene, worldWidth) {
 
   scene.time.delayedCall(Math.round(duration * 0.46), () => {
     scene.playDogBarkSound();
-    const food = scene.pizzaGroup.get(scene.pizzaPlane.x, scene.pizzaPlane.y + 16, 'pizzaWhole');
+    let food = scene.pizzaGroup.get(scene.pizzaPlane.x, scene.pizzaPlane.y + 16, 'pizzaWhole');
     if (!food) {
-      return;
+      // Pool is full — recycle the first inactive or on-ground item so the
+      // bonus delivery always arrives even under heavy food load.
+      const stale = scene.pizzaGroup.getChildren().find(f => !f.active || f.onGround);
+      if (stale) {
+        stale.setActive(false).setVisible(false);
+        food = scene.pizzaGroup.get(scene.pizzaPlane.x, scene.pizzaPlane.y + 16, 'pizzaWhole');
+      }
+      if (!food) return;
     }
     food.foodValue = 5;
     food.baseFoodValue = 5;
@@ -113,7 +120,7 @@ export function launchAirplaneBigPizza(scene, worldWidth) {
     const batteryDropX = scene.pizzaPlane.x + (fromLeft ? -85 : 85);
     if (scene.currentMapKey === 'moon') {
       scene.spawnFuelDrop(batteryDropX, scene.pizzaPlane.y - 22, fromLeft ? -1 : 1);
-    } else {
+    } else if (scene.currentEnemyType !== 'off') {
       scene.spawnBatteryDrop(batteryDropX, scene.pizzaPlane.y - 22, fromLeft ? -1 : 1);
     }
   });

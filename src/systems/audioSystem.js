@@ -124,8 +124,8 @@ export function playAirplaneSound(scene, durationMs = 2800) {
   const attack = Math.min(0.12, duration * 0.1);
   const sustainLevel = 0.03;
   osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(160, now);
-  osc.frequency.linearRampToValueAtTime(48, now + duration);
+  osc.frequency.setValueAtTime(55, now);
+  osc.frequency.linearRampToValueAtTime(28, now + duration);
   gain.gain.setValueAtTime(0.0001, now);
   gain.gain.linearRampToValueAtTime(0.045, now + attack);
   gain.gain.linearRampToValueAtTime(sustainLevel, now + Math.max(attack + 0.05, duration - 0.25));
