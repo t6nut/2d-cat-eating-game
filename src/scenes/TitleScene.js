@@ -9,7 +9,8 @@ const H = 720;
 const CHARACTER_OPTIONS = {
   orange:   { label: 'Orange Cat',  idle: 'kittenIdle'   },
   tuxedo:   { label: 'Tuxedo Cat',  idle: 'tuxedoIdle'   },
-  pikatchu: { label: 'Pikatchu',    idle: 'pikatchuIdle'  },
+  pikatchu: { label: 'Pikatchu',    idle: 'pikatchuIdle' },
+  stitch:   { label: 'Stitch',      idle: 'stitchIdle'   },
 };
 
 const THEME_OPTIONS = {
@@ -84,6 +85,11 @@ export class TitleScene extends Phaser.Scene {
     this.load.svg('pikatchuWalk2','assets/sprites/pikatchu_walk2.svg',    { scale: 1 });
     this.load.svg('pikatchuRun',  'assets/sprites/pikatchu_run.svg',      { scale: 1 });
     this.load.svg('pikatchuEat',  'assets/sprites/pikatchu_eat.svg',      { scale: 1 });
+    this.load.svg('stitchIdle',   'assets/sprites/stitch_idle.svg',       { scale: 1 });
+    this.load.svg('stitchWalk1',  'assets/sprites/stitch_walk1.svg',      { scale: 1 });
+    this.load.svg('stitchWalk2',  'assets/sprites/stitch_walk2.svg',      { scale: 1 });
+    this.load.svg('stitchRun',    'assets/sprites/stitch_run.svg',        { scale: 1 });
+    this.load.svg('stitchEat',    'assets/sprites/stitch_eat.svg',        { scale: 1 });
     this.load.svg('pizza',        'assets/sprites/pizza_slice.svg',       { scale: 1 });
     this.load.svg('pizzaWhole',   'assets/sprites/pizza_whole.svg',       { scale: 1 });
     // Normal-map vehicles (pizza oven with chef & airplane)
@@ -352,7 +358,7 @@ export class TitleScene extends Phaser.Scene {
       // ---------- CHARACTER – vertical column beside preview card ----------
       mlbl(920, 228, 'Character');
       this.optionButtons['character'] = [];
-      const charKeys = ['orange', 'tuxedo', 'pikatchu'];
+      const charKeys = ['orange', 'tuxedo', 'pikatchu', 'stitch'];
       const charColX   = 920;
       const charColY0  = 264;
       const charColStep = 52;
@@ -440,7 +446,7 @@ export class TitleScene extends Phaser.Scene {
     } else {
       // Desktop/tablet layout.
       lbl(panelCX, panelY - 95, 'Character');
-      this.createOptionRow('character', ['orange', 'tuxedo', 'pikatchu'], CHARACTER_OPTIONS, panelY - 67, applyCharacterSelection, panelCX);
+      this.createOptionRow('character', ['orange', 'tuxedo', 'pikatchu', 'stitch'], CHARACTER_OPTIONS, panelY - 67, applyCharacterSelection, panelCX);
 
       lbl(panelCX - 320, panelY - 18, 'Theme');
       lbl(panelCX + 170, panelY - 18, 'Map');

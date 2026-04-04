@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 24" shape-rendering="crispEdges">
+  <rect width="32" height="24" fill="none"/>
+  <!-- Left ear -->
+  <rect x="4" y="4" width="4" height="6" fill="#3366ff"/>
+  <!-- Right ear -->
+  <rect x="24" y="4" width="4" height="6" fill="#3366ff"/>
+  <!-- Head/Body -->
+  <rect x="6" y="6" width="20" height="12" fill="#3366ff"/>
+  <!-- Top spikes/hair -->
+  <rect x="10" y="2" width="2" height="4" fill="#3366ff"/>
+  <rect x="14" y="1" width="2" height="5" fill="#3366ff"/>
+  <rect x="18" y="2" width="2" height="4" fill="#3366ff"/>
+  <!-- Left eye white -->
+  <rect x="10" y="10" width="4" height="4" fill="#ffffff"/>
+  <!-- Right eye white -->
+  <rect x="18" y="10" width="4" height="4" fill="#ffffff"/>
+  <!-- Left pupil -->
+  <rect x="11" y="11" width="2" height="2" fill="#000000"/>
+  <!-- Right pupil -->
+  <rect x="19" y="11" width="2" height="2" fill="#000000"/>
+  <!-- Nose -->
+  <rect x="15" y="12" width="2" height="2" fill="#1a1a1a"/>
+  <!-- Mouth/smile -->
+  <rect x="10" y="16" width="12" height="1" fill="#1a1a1a"/>
+  <!-- Upper teeth -->
+  <rect x="11" y="15" width="1" height="1" fill="#ffffff"/>
+  <rect x="13" y="15" width="1" height="1" fill="#ffffff"/>
+  <rect x="15" y="15" width="1" height="1" fill="#ffffff"/>
+  <rect x="17" y="15" width="1" height="1" fill="#ffffff"/>
+  <rect x="19" y="15" width="1" height="1" fill="#ffffff"/>
+  <!-- Left foot (forward) -->
+  <rect x="6" y="19" width="3" height="3" fill="#1a1a1a"/>
+  <!-- Right foot (back) -->
+  <rect x="23" y="19" width="3" height="3" fill="#1a1a1a"/>
+</svg>

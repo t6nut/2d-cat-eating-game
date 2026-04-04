@@ -17,6 +17,7 @@ const CHARACTER_SKINS = {
   orange:   { idle: 'kittenIdle',   walk1: 'kittenWalk1',   walk2: 'kittenWalk2',   run: 'kittenRun',   eat: 'kittenEat'   },
   tuxedo:   { idle: 'tuxedoIdle',   walk1: 'tuxedoWalk1',   walk2: 'tuxedoWalk2',   run: 'tuxedoRun',   eat: 'tuxedoEat'   },
   pikatchu: { idle: 'pikatchuIdle', walk1: 'pikatchuWalk1', walk2: 'pikatchuWalk2', run: 'pikatchuRun', eat: 'pikatchuEat' },
+  stitch:   { idle: 'stitchIdle',   walk1: 'stitchWalk1',   walk2: 'stitchWalk2',   run: 'stitchRun',   eat: 'stitchEat'   },
 };
 
 const MODE_SETTINGS = {
