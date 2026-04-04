@@ -21,74 +21,78 @@
   // Previous pressed state for edge-detection (just-down) buttons
   var prev = { A: false, X: false, Start: false };
   var rafId = null;
-  var keepaliveFrames = 0;
-  // Send a keepalive every N frames (~5 s at 60 fps).
-  // Xbox wireless controllers power off when the host stops sending
-  // XInput keepalive packets; a zero-intensity vibration effect satisfies
-  // the driver without producing any noticeable rumble for the player.
-  var KEEPALIVE_INTERVAL = 300;
+  var keepaliveTimer = null;
 
-  function sendKeepalive(gp) {
-    if (gp.vibrationActuator && gp.vibrationActuator.playEffect) {
-      gp.vibrationActuator.playEffect('dual-rumble', {
-        startDelay: 0, duration: 16, weakMagnitude: 0, strongMagnitude: 0,
-      }).catch(function () {});
+  // Send a tiny (imperceptible) rumble to keep the Xbox wireless receiver
+  // from dropping the connection. Zero magnitude is filtered out by the
+  // driver before it reaches the hardware — a non-zero value is required.
+  function sendKeepalive() {
+    var gps = navigator.getGamepads();
+    for (var i = 0; i < gps.length; i++) {
+      var gp = gps[i];
+      if (gp && gp.vibrationActuator && gp.vibrationActuator.playEffect) {
+        gp.vibrationActuator.playEffect('dual-rumble', {
+          startDelay: 0, duration: 20,
+          weakMagnitude: 0.0001, strongMagnitude: 0.0001,
+        }).catch(function () {});
+      }
     }
   }
 
   function poll() {
-    var gp = navigator.getGamepads()[0];
-
-    if (gp && window._mobile) {
-      var m    = window._mobile;
-      var btns = gp.buttons;
-      var axes = gp.axes;
-
-      // ── Movement ────────────────────────────────────────────────
-      var stickLeft  = (axes[0] || 0) < -0.3;
-      var stickRight = (axes[0] || 0) >  0.3;
-      var dpadLeft   = btns[14] ? btns[14].pressed : false;
-      var dpadRight  = btns[15] ? btns[15].pressed : false;
-
-      m.left  = stickLeft  || dpadLeft;
-      m.right = stickRight || dpadRight;
-
-      // ── Jump (A) ─────────────────────────────────────────────────
-      var aDown = btns[0] ? btns[0].pressed : false;
-      m.jumpHeld = aDown;
-      if (aDown && !prev.A) m.jumpJustDown = true;
-      prev.A = aDown;
-
-      // ── Flashlight (X) ───────────────────────────────────────────
-      var xDown = btns[2] ? btns[2].pressed : false;
-      if (xDown && !prev.X) m.lightJustDown = true;
-      prev.X = xDown;
-
-      // ── Menu / Pause (Start) ──────────────────────────────────────
-      var startDown = btns[9] ? btns[9].pressed : false;
-      if (startDown && !prev.Start) m.menuJustDown = true;
-      prev.Start = startDown;
-
-      // ── Wireless keepalive ────────────────────────────────────────
-      keepaliveFrames += 1;
-      if (keepaliveFrames >= KEEPALIVE_INTERVAL) {
-        keepaliveFrames = 0;
-        sendKeepalive(gp);
-      }
-    }
-
+    // Always reschedule first so an exception inside the body can't kill the
+    // loop — previously a crash here left rafId pointing at a dead frame,
+    // stopping keepalives and input until the browser was restarted.
     rafId = requestAnimationFrame(poll);
+    try {
+      var gp = navigator.getGamepads()[0];
+
+      if (gp && window._mobile) {
+        var m    = window._mobile;
+        var btns = gp.buttons;
+        var axes = gp.axes;
+
+        // ── Movement ────────────────────────────────────────────────
+        var stickLeft  = (axes[0] || 0) < -0.3;
+        var stickRight = (axes[0] || 0) >  0.3;
+        var dpadLeft   = btns[14] ? btns[14].pressed : false;
+        var dpadRight  = btns[15] ? btns[15].pressed : false;
+
+        m.left  = stickLeft  || dpadLeft;
+        m.right = stickRight || dpadRight;
+
+        // ── Jump (A) ─────────────────────────────────────────────────
+        var aDown = btns[0] ? btns[0].pressed : false;
+        m.jumpHeld = aDown;
+        if (aDown && !prev.A) m.jumpJustDown = true;
+        prev.A = aDown;
+
+        // ── Flashlight (X) ───────────────────────────────────────────
+        var xDown = btns[2] ? btns[2].pressed : false;
+        if (xDown && !prev.X) m.lightJustDown = true;
+        prev.X = xDown;
+
+        // ── Menu / Pause (Start) ──────────────────────────────────────
+        var startDown = btns[9] ? btns[9].pressed : false;
+        if (startDown && !prev.Start) m.menuJustDown = true;
+        prev.Start = startDown;
+      }
+    } catch (e) {
+      // Swallow so the loop keeps running; log for visibility.
+      console.warn('[Gamepad] poll error:', e);
+    }
   }
 
   function startPolling() {
     if (!rafId) {
       prev = { A: false, X: false, Start: false };
-      keepaliveFrames = 0;
       rafId = requestAnimationFrame(poll);
-      // Send an immediate keepalive so the controller doesn't time out
-      // in the first few seconds before the regular interval fires.
-      var gp = navigator.getGamepads()[0];
-      if (gp) sendKeepalive(gp);
+    }
+    if (!keepaliveTimer) {
+      // Use setInterval so keepalives arrive on a guaranteed wall-clock
+      // schedule regardless of rAF throttling. Fire immediately too.
+      sendKeepalive();
+      keepaliveTimer = setInterval(sendKeepalive, 8000);
     }
   }
 
@@ -96,6 +100,10 @@
     if (rafId) {
       cancelAnimationFrame(rafId);
       rafId = null;
+    }
+    if (keepaliveTimer) {
+      clearInterval(keepaliveTimer);
+      keepaliveTimer = null;
     }
   }
 
